@@ -48,7 +48,7 @@
   <div class="auth-right">
     <div class="form-wrap">
 
-      <!-- STEP 1: Account Type -->
+      <!-- Account Type -->
       <div *ngIf="step === 1" class="step-panel">
         <div class="form-header">
           <h1>Create your account</h1>
@@ -76,7 +76,7 @@
         </p>
       </div>
 
-      <!-- STEP 2: Personal Info -->
+      <!-- Personal Info -->
       <div *ngIf="step === 2" class="step-panel">
         <div class="form-header">
           <div class="back-btn" (click)="step = 1">← Back</div>
@@ -124,7 +124,7 @@
         </button>
       </div>
 
-      <!-- STEP 3: Password -->
+      <!-- Password -->
       <div *ngIf="step === 3" class="step-panel">
         <div class="form-header">
           <div class="back-btn" (click)="step = 2">← Back</div>
@@ -132,7 +132,6 @@
           <p>Create a strong password to protect your account.</p>
         </div>
 
-        <!-- Step 3 banners — error & success -->
         <div class="error-banner" *ngIf="error">
           <span class="banner-icon">⚠</span>
           <span>{{ error }}</span>
@@ -163,7 +162,6 @@
               Password must be at least 8 characters.
             </div>
 
-            <!-- Password strength -->
             <div class="pw-strength" *ngIf="f['password'].value">
               <div class="pw-bars">
                 <div class="pw-bar" *ngFor="let i of [1,2,3,4]"
@@ -185,18 +183,13 @@
             </div>
           </div>
 
-          <!-- ── SECURITY SECTION ─────────────────────────────────── -->
           <div class="security-section">
-
-
             <div class="field-group">
               <label>Security Question</label>
 
-              <!-- Custom Dropdown -->
               <div class="custom-select" [class.error]="f['securityQuestion'].invalid && f['securityQuestion'].touched"
                 [class.open]="dropdownOpen" (clickOutside)="dropdownOpen = false">
 
-                <!-- Trigger Button -->
                 <div class="custom-select-trigger" (click)="dropdownOpen = !dropdownOpen">
                   <span class="input-icon">❓</span>
                   <span class="select-value" [class.placeholder]="!f['securityQuestion'].value">
@@ -205,7 +198,6 @@
                   <span class="select-arrow" [class.rotated]="dropdownOpen">▾</span>
                 </div>
 
-                <!-- Dropdown Panel -->
                 <div class="custom-select-panel" *ngIf="dropdownOpen">
                   <div *ngFor="let group of securityQuestions">
                     <div class="option-group-label">{{ group.group }}</div>
@@ -218,7 +210,6 @@
                 </div>
               </div>
 
-              <!-- Hidden native select keeps the FormControl in sync -->
               <select formControlName="securityQuestion" style="display:none">
                 <option value="">Choose a security question</option>
                 <option *ngFor="let group of securityQuestions" [attr.disabled]="true">{{ group.group }}</option>
@@ -250,7 +241,6 @@
               </div>
             </div>
           </div>
-          <!-- ── END SECURITY SECTION ─────────────────────────────── -->
 
           <label class="checkbox-label">
             <input type="checkbox" formControlName="agreeTerms" />

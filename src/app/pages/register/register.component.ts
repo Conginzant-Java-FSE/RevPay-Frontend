@@ -55,9 +55,7 @@ export class RegisterComponent {
   }
 
   nextStep() {
-    // Validate step 2 fields
     const step2Fields = ['fullName', 'email', 'phone'];
-    // if (this.accountType === 'BUSINESS') step2Fields.push('businessName', 'businessType');
     step2Fields.forEach(f => this.form.get(f)?.markAsTouched());
     const step2Valid = step2Fields.every(f => this.form.get(f)?.valid);
     if (step2Valid) this.step = 3;
@@ -83,8 +81,6 @@ export class RegisterComponent {
       next: (res) => {
         this.loading = false;
         this.success = 'Registration successful! Redirecting you to login...';
-
-        // Auto-dismiss after 3 seconds then navigate
         setTimeout(() => {
           this.success = '';
           this.router.navigate(['/login']);
