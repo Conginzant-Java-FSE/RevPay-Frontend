@@ -10,8 +10,8 @@ export class MoneyRequestService {
 
   constructor(private http: HttpClient) {}
 
-  send(payload: { recipient: string; amount: number; note: string; pin: string }): Observable<ApiResponse<void>> {
-    return this.http.post<ApiResponse<void>>(`${this.base}/send`, payload);
+  send(payload: { receiverEmailOrPhone: string; amount: number; note: string; pin: string }): Observable<ApiResponse<void>> {
+    return this.http.post<ApiResponse<void>>(`${environment.apiBaseUrl}/transactions/send`, payload);
   }
 
   requestMoney(payload: { recipient: string; amount: number; purpose: string }): Observable<ApiResponse<void>> {

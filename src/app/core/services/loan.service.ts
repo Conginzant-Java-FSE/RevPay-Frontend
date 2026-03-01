@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ApiResponse, Loan, RepaymentSchedule } from '../models';
+import { ApiResponse, Loan, PagedResponse, RepaymentSchedule } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class LoanService {
@@ -10,8 +10,8 @@ export class LoanService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<ApiResponse<Loan[]>> {
-    return this.http.get<ApiResponse<Loan[]>>(this.base);
+  getAll(): Observable<PagedResponse<Loan>> {
+    return this.http.get<PagedResponse<Loan>>(this.base);
   }
 
   getById(loanId: number): Observable<ApiResponse<Loan>> {

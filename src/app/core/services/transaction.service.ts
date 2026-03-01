@@ -2,7 +2,17 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ApiResponse, PagedResponse, Transaction, TransactionFilters } from '../models';
+import { TransactionListResponse, Transaction } from '../models';
+
+export interface TransactionFilters {
+  page?:   number;
+  size?:   number;
+  type?:   string;
+  status?: string;
+  from?:   string;
+  to?:     string;
+  search?: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class TransactionService {
@@ -10,21 +20,22 @@ export class TransactionService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(filters: TransactionFilters = {}): Observable<PagedResponse<Transaction>> {
+  getAll(filters: TransactionFilters = {}): Observable<TransactionListResponse> {
     let params = new HttpParams();
-    Object.entries(filters).forEach(([k, v]) => {
-      if (v !== undefined && v !== null && v !== '') params = params.set(k, String(v));
-    });
-    return this.http.get<PagedResponse<Transaction>>(this.base, { params });
-  }
+    if (filters.page   !== undefined) params = params.set('page',   filters.page);
+    if (filters.size   !== undefined) params = params.set('size',   filters.size);
+    if (filters.type   && filters.type   !== 'ALL') params = params.set('type',   filters.type);
+    if (filters.status && filters.status !== 'ALL') params = params.set('status', filters.status);
+    if (filters.from)   params = params.set('from',   filters.from);
+    if (filters.to)     params = params.set('to',     filters.to);
+    if (filters.search) params = params.set('search', filters.search);
 
-  getById(transactionId: string): Observable<ApiResponse<Transaction>> {
-    return this.http.get<ApiResponse<Transaction>>(`${this.base}/${transactionId}`);
+    return this.http.get<TransactionListResponse>(this.base, { params });
   }
 
   export(format: 'CSV' | 'PDF'): Observable<Blob> {
     return this.http.get(`${this.base}/export`, {
-      params: { format },
+      params:       new HttpParams().set('format', format),
       responseType: 'blob',
     });
   }

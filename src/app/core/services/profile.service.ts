@@ -19,11 +19,11 @@ export class ProfileService {
   }
 
   updateBusiness(payload: { businessName?: string; businessType?: string; taxId?: string; contactPhone?: string; website?: string }): Observable<ApiResponse<UserProfile>> {
-    return this.http.put<ApiResponse<UserProfile>>(`${this.base}/business/update`, payload);
+    return this.http.put<ApiResponse<UserProfile>>(`${environment.apiBaseUrl}/user/profile/business/update`, payload);
   }
 
   changePassword(payload: { currentPassword: string; newPassword: string; confirmPassword: string }): Observable<ApiResponse<void>> {
-    return this.http.put<ApiResponse<void>>(`${this.base}/change-password`, payload);
+    return this.http.put<ApiResponse<void>>(`${this.base.replace('/profile', '/user')}/change-password`, payload);
   }
 
   changePin(payload: { currentPin?: string; newPin: string; confirmPin: string }): Observable<ApiResponse<void>> {

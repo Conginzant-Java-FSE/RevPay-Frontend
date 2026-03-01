@@ -35,6 +35,6 @@ export class AnalyticsService {
   }
 
   getInvoiceSummary(): Observable<ApiResponse<InvoiceSummary>> {
-    return this.http.get<ApiResponse<InvoiceSummary>>(`${this.base}/invoices/summary`);
+    return this.http.get<ApiResponse<InvoiceSummary>>(`${this.base.replace('/analytics', '')}/invoices/summary`);
   }
 }
