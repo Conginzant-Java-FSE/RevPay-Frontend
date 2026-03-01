@@ -19,7 +19,7 @@ export class NotificationService {
   }
 
   markAllRead(): Observable<ApiResponse<void>> {
-    return this.http.put<ApiResponse<void>>(`${this.base}/read-all`, {});
+    return this.http.get<ApiResponse<void>>(`${this.base}/read-all`);
   }
 
   getPreferences(): Observable<ApiResponse<any>> {
