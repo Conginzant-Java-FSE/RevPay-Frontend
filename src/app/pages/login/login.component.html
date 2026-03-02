@@ -1,0 +1,100 @@
+<div class="auth-layout">
+
+  <!-- Left panel -->
+  <div class="auth-left">
+    <a routerLink="/" class="logo">
+      <span class="logo-mark">R</span>
+      <span class="logo-text">RevPay</span>
+    </a>
+
+    <div class="auth-hero">
+      <div class="orb orb-a"></div>
+      <div class="orb orb-b"></div>
+      <blockquote>
+        "RevPay has completely transformed how we manage business payments. The speed and transparency are unmatched."
+      </blockquote>
+      <div class="testimonial-author">
+        <div class="author-avatar">MVS</div>
+        <div>
+          <div class="author-name">Midhun V S</div>
+          <div class="author-role">Founder, RevPay.com</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="trust-row">
+      <span>🔒 256-bit SSL</span>
+      <span>✓ PCI Compliant</span>
+      <span>⚡ Real-time</span>
+    </div>
+  </div>
+
+  <!-- Right panel (form) -->
+  <div class="auth-right">
+    <div class="form-wrap">
+      <div class="form-header">
+        <h1>Welcome back</h1>
+        <p>Sign in to your RevPay account</p>
+      </div>
+
+      <div class="error-banner" *ngIf="error">
+        <span>⚠</span> {{ error }}
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="field-group">
+          <label for="emailOrPhone">Email or Phone Number</label>
+          <div class="input-wrap" [class.error]="emailOrPhone.invalid && emailOrPhone.touched">
+            <span class="input-icon">✉</span>
+            <input
+              id="emailOrPhone"
+              type="text"
+              formControlName="emailOrPhone"
+              placeholder="you@example.com or 5550000000"
+              autocomplete="username"
+            />
+          </div>
+          <div class="field-error" *ngIf="emailOrPhone.invalid && emailOrPhone.touched">
+            Email or phone is required.
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="label-row">
+            <label for="password">Password</label>
+            <a routerLink="/forgot-password" class="forgot-link">Forgot password?</a>
+          </div>
+          <div class="input-wrap" [class.error]="password.invalid && password.touched">
+            <span class="input-icon">🔑</span>
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Your password"
+              autocomplete="current-password"
+            />
+            <button type="button" class="toggle-pw" (click)="togglePassword()">
+              {{ showPassword ? '🙈' : '👁' }}
+            </button>
+          </div>
+          <div class="field-error" *ngIf="password.invalid && password.touched">
+            Password must be at least 6 characters.
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" [disabled]="loading">
+          <span *ngIf="!loading">Sign In <span class="arrow">→</span></span>
+          <span *ngIf="loading" class="spinner"></span>
+        </button>
+      </form>
+
+      <div class="divider"><span>or</span></div>
+
+      <p class="auth-switch">
+        Don't have an account?
+        <a routerLink="/register">Create one free</a>
+      </p>
+    </div>
+  </div>
+
+</div>
