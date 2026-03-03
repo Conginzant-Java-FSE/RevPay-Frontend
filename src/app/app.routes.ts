@@ -14,6 +14,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent),
   },
 
+  {
+     path: 'payment-methods',
+     loadComponent: () => import('./pages/payment-methods/payment-methods.component').then(m => m.PaymentMethodsComponent) 
+  },
+
   { path: '**', redirectTo: '' },
 ];
 
