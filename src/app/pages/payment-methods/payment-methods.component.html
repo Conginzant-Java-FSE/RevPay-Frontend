@@ -1,0 +1,133 @@
+<div class="page-layout">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Payment Methods</h1>
+      <p class="page-sub">Manage your linked cards</p>
+    </div>
+    <button class="btn-primary" (click)="openAdd()">＋ Add Card</button>
+  </div>
+
+  <div class="alert success" *ngIf="successMsg">{{ successMsg }}</div>
+
+  <!-- Loading -->
+  <div class="cards-grid skeleton" *ngIf="loading">
+    <div class="skeleton-card" *ngFor="let i of [1,2,3]"></div>
+  </div>
+
+  <!-- Cards -->
+  <div class="cards-grid" *ngIf="!loading">
+    <div class="empty-state" *ngIf="cards.length === 0">
+      <span class="empty-icon">💳</span>
+      <p>No cards added yet.</p>
+      <button class="btn-primary" (click)="openAdd()">Add your first card</button>
+    </div>
+
+    <div class="card-item" *ngFor="let card of cards" [class.default]="card.isDefault">
+      <div class="card-brand">{{ cardBrandIcon(card.cardType) }} {{ card.cardType }}</div>
+      <div class="card-number">•••• •••• •••• {{ card.lastFour }}</div>
+      <div class="card-meta">
+        <span>{{ card.nickname }}</span>
+        <span>Expires {{ card.expiryMonth }}/{{ card.expiryYear }}</span>
+      </div>
+      <div class="default-badge" *ngIf="card.isDefault">✓ Default</div>
+      <div class="card-actions">
+        <button class="action-link" (click)="openEdit(card)">Edit</button>
+        <button class="action-link" *ngIf="!card.isDefault" (click)="setDefault(card.cardId)">Set Default</button>
+        <button class="action-link danger" (click)="deleteCard(card.cardId, card.nickname)"
+          [disabled]="deletingId === card.cardId">
+          {{ deletingId === card.cardId ? '…' : 'Delete' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Card Modal -->
+  <div class="modal-backdrop" *ngIf="showAddModal" (click)="closeAdd()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-head"><h3>Add New Card</h3><button class="close-btn" (click)="closeAdd()">✕</button></div>
+      <form [formGroup]="addForm" (ngSubmit)="submitAdd()" class="modal-body">
+        <div class="alert error" *ngIf="error">{{ error }}</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Card Number</label>
+            <input type="text" formControlName="cardNumber" placeholder="16 digits" maxlength="16"/>
+            <span class="field-error" *ngIf="f('cardNumber')?.touched && f('cardNumber')?.invalid">Valid 16-digit number required</span>
+          </div>
+          <div class="form-group">
+            <label>Nickname</label>
+            <input type="text" formControlName="nickname" placeholder="My HDFC Card"/>
+            <span class="field-error" *ngIf="f('nickname')?.touched && f('nickname')?.invalid">Required</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Expiry Month</label>
+            <input type="number" formControlName="expiryMonth" placeholder="MM" min="1" max="12"/>
+          </div>
+          <div class="form-group">
+            <label>Expiry Year</label>
+            <input type="number" formControlName="expiryYear" placeholder="YYYY"/>
+          </div>
+          <div class="form-group">
+            <label>CVV</label>
+            <input type="password" formControlName="cvv" placeholder="•••" maxlength="4"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Card Holder Name</label>
+          <input type="text" formControlName="cardHolderName" placeholder="As on card"/>
+        </div>
+        <div class="form-group">
+          <label>Billing Address</label>
+          <textarea formControlName="billingAddress" rows="2" placeholder="Full billing address"></textarea>
+        </div>
+        <label class="checkbox-row">
+          <input type="checkbox" formControlName="setAsDefault"/>
+          Set as default card
+        </label>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" (click)="closeAdd()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="submitting">
+            {{ submitting ? 'Adding…' : 'Add Card' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Card Modal -->
+  <div class="modal-backdrop" *ngIf="showEditModal" (click)="closeEdit()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-head"><h3>Edit Card</h3><button class="close-btn" (click)="closeEdit()">✕</button></div>
+      <form [formGroup]="editForm" (ngSubmit)="submitEdit()" class="modal-body">
+        <div class="alert error" *ngIf="error">{{ error }}</div>
+        <div class="form-group">
+          <label>Nickname</label>
+          <input type="text" formControlName="nickname"/>
+          <span class="field-error" *ngIf="ef('nickname')?.touched && ef('nickname')?.invalid">Required</span>
+        </div>
+        <div class="form-group">
+          <label>Billing Address</label>
+          <textarea formControlName="billingAddress" rows="2"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" (click)="closeEdit()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="submitting">
+            {{ submitting ? 'Saving…' : 'Save Changes' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<app-confirm-modal
+  [visible]="confirmVisible"
+  [title]="confirmTitle"
+  [message]="confirmMessage"
+  [icon]="confirmIcon"
+  [okLabel]="confirmOkLabel"
+  [okClass]="confirmOkClass"
+  (confirmed)="onConfirmOk()"
+  (cancelled)="onConfirmCancel()">
+</app-confirm-modal>
