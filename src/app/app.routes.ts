@@ -30,9 +30,10 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: 'notifications', loadComponent: () => import('./pages/notifications/notifications.component').then(m => m.NotificationsComponent) },
+      { path: 'requests', loadComponent: () => import('./pages/requests/requests.component').then(m => m.RequestsComponent) },
     ]
   },
-
+  
   { path: '**', redirectTo: '' },
 ];
 
