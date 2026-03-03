@@ -19,6 +19,11 @@ export const routes: Routes = [
   },
 
   {
+    path: 'requests', 
+    loadComponent: () => import('./pages/requests/requests.component').then(m => m.RequestsComponent) 
+  },
+
+  {
      path: 'payment-methods',
      loadComponent: () => import('./pages/payment-methods/payment-methods.component').then(m => m.PaymentMethodsComponent) 
   },
