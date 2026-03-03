@@ -1,0 +1,425 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+// ── Tokens ────────────────────────────────────────────────────
+$bg:       #050810;
+$surface:  #0d1117;
+$accent:   #4f8ef7;
+$accent2:  #7c3aed;
+$green:    #22c55e;
+$text:     #e8eaf0;
+$muted:    #6b7280;
+$border:   rgba(255, 255, 255, 0.07);
+
+:host {
+  display: block;
+  background: $bg;
+  min-height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+  color: $text;
+}
+
+// ── Layout ────────────────────────────────────────────────────
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section {
+  padding: 5rem 0;
+  border-top: 1px solid $border;
+}
+
+// ── Hero ──────────────────────────────────────────────────────
+.hero {
+  position: relative;
+  padding: 7rem 0 5rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero-glow {
+  position: absolute;
+  width: 700px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba($green, 0.08) 0%, rgba($accent, 0.06) 40%, transparent 70%);
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.hero-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $green;
+  background: rgba($green, 0.1);
+  border: 1px solid rgba($green, 0.2);
+  border-radius: 100px;
+  padding: 0.3rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: #fff;
+  margin: 0 0 1.25rem;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, $green, $accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 1.05rem;
+  color: $muted;
+  line-height: 1.75;
+  margin: 0 0 2rem;
+}
+
+.hero-chips {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.chip {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid $border;
+  border-radius: 100px;
+  padding: 0.3rem 0.9rem;
+}
+
+// ── Section head ──────────────────────────────────────────────
+.section-head {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.75rem;
+}
+
+.section-sub {
+  font-size: 0.95rem;
+  color: $muted;
+  line-height: 1.7;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+// ── Features grid ─────────────────────────────────────────────
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+
+  @media (max-width: 900px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 580px) { grid-template-columns: 1fr; }
+}
+
+.feature-card {
+  padding: 1.5rem;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 18px;
+  transition: all 0.25s;
+  animation: fadeUp 0.5s ease both;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    right: 0; height: 2px;
+    background: var(--f-color);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  &:hover {
+    border-color: rgba(255,255,255,0.12);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    &::after { opacity: 1; }
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.feature-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid $border;
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.feature-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.feature-desc {
+  font-size: 0.82rem;
+  color: $muted;
+  line-height: 1.65;
+}
+
+// ── Policy section ────────────────────────────────────────────
+.policy-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 3rem;
+  align-items: start;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    .toc { display: none; }
+  }
+}
+
+// TOC sidebar
+.toc {
+  position: sticky;
+  top: 2rem;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 16px;
+  padding: 1.25rem;
+}
+
+.toc-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: $muted;
+  margin-bottom: 0.75rem;
+}
+
+.toc-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.toc-link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: $muted;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1.4;
+
+  &:hover { background: rgba(255,255,255,0.04); color: $text; }
+  &.active { background: rgba($accent, 0.1); color: $accent; }
+}
+
+.toc-divider {
+  height: 1px;
+  background: $border;
+  margin: 1rem 0;
+}
+
+.toc-help-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: $muted;
+  margin-bottom: 0.35rem;
+}
+
+.toc-help-link {
+  font-size: 0.75rem;
+  color: $accent;
+  text-decoration: none;
+  transition: opacity 0.2s;
+  word-break: break-all;
+  &:hover { opacity: 0.75; }
+}
+
+// Policy content
+.policy-intro {
+  background: rgba($accent, 0.05);
+  border: 1px solid rgba($accent, 0.15);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  font-size: 0.85rem;
+  color: $muted;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+
+  strong { color: $text; }
+}
+
+.policy-section-block {
+  margin-bottom: 2.5rem;
+  scroll-margin-top: 84px;
+}
+
+.policy-heading {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid $border;
+}
+
+.policy-para {
+  font-size: 0.9rem;
+  color: $muted;
+  line-height: 1.8;
+  margin: 0 0 0.85rem;
+}
+
+// ── CTA row ───────────────────────────────────────────────────
+.cta-section { border-top: 1px solid $border; }
+
+.cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  background: linear-gradient(135deg, rgba($green, 0.06), rgba($accent, 0.05));
+  border: 1px solid rgba($green, 0.15);
+  border-radius: 20px;
+  padding: 2rem 2.5rem;
+  flex-wrap: wrap;
+}
+
+.cta-text {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex: 1;
+}
+
+.cta-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.cta-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.35rem;
+}
+
+.cta-sub {
+  font-size: 0.85rem;
+  color: $muted;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  background: rgba($green, 0.12);
+  color: $green;
+  border: 1px solid rgba($green, 0.25);
+  padding: 0.7rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba($green, 0.22);
+    border-color: rgba($green, 0.4);
+    transform: translateY(-1px);
+  }
+}
+
+// ── Footer ────────────────────────────────────────────────────
+.page-footer {
+  border-top: 1px solid $border;
+  padding: 2rem 0;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-brand {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+
+  a {
+    font-size: 0.82rem;
+    color: $muted;
+    text-decoration: none;
+    transition: color 0.2s;
+    &:hover { color: $accent; }
+  }
+}
+
+.footer-copy {
+  font-size: 0.78rem;
+  color: darken($muted, 10%);
+}
