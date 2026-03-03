@@ -18,6 +18,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
   },
 
+  {
+     path: 'payment-methods',
+     loadComponent: () => import('./pages/payment-methods/payment-methods.component').then(m => m.PaymentMethodsComponent) 
+  },
+
   { path: '**', redirectTo: '' },
 ];
 
