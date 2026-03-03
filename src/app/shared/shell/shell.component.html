@@ -1,0 +1,84 @@
+<div class="shell-layout" [class.sidebar-open]="sidebarOpen">
+
+  <!-- Mobile overlay -->
+  <div class="sidebar-overlay" *ngIf="sidebarOpen" (click)="sidebarOpen=false"></div>
+
+  <!-- ── Sidebar ─────────────────────────────────────────────── -->
+  <aside class="sidebar" [class.open]="sidebarOpen">
+    <a routerLink="/dashboard" class="logo">
+      <span class="logo-mark">R</span>
+      <span class="logo-text">RevPay</span>
+    </a>
+
+    <nav class="nav-menu">
+      <!-- Personal + Business routes -->
+      <a class="nav-item" routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+        <span class="nav-icon">⊞</span> Dashboard
+      </a>
+      <a class="nav-item" routerLink="/transactions" routerLinkActive="active">
+        <span class="nav-icon">↕</span> Transactions
+      </a>
+      <a class="nav-item" routerLink="/payment-methods" routerLinkActive="active">
+        <span class="nav-icon">💳</span> Payment Methods
+      </a>
+      <a class="nav-item" routerLink="/requests" routerLinkActive="active">
+        <span class="nav-icon">📩</span> Requests
+      </a>
+      <a class="nav-item" routerLink="/send-money" routerLinkActive="active">
+        <span class="nav-icon">↗</span> Send Money
+      </a>
+      <a class="nav-item" routerLink="/notifications" routerLinkActive="active">
+        <span class="nav-icon">🔔</span> Notifications
+        <span class="nav-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+      </a>
+      <a class="nav-item" routerLink="/settings" routerLinkActive="active">
+        <span class="nav-icon">⚙</span> Settings
+      </a>
+
+      <!-- Business only -->
+      <ng-container *ngIf="isBusinessAccount">
+        <div class="nav-divider"></div>
+        <div class="nav-section-label">Business</div>
+        <a class="nav-item" routerLink="/invoices" routerLinkActive="active">
+          <span class="nav-icon">🧾</span> Invoices
+        </a>
+        <a class="nav-item" routerLink="/loans" routerLinkActive="active">
+          <span class="nav-icon">🏦</span> Loans
+        </a>
+        <a class="nav-item" routerLink="/analytics" routerLinkActive="active">
+          <span class="nav-icon">📊</span> Analytics
+        </a>
+      </ng-container>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-avatar">{{ initials }}</div>
+        <div class="user-info">
+          <div class="user-name">{{ profile?.fullName }}</div>
+          <div class="user-type">{{ profile?.accountType | titlecase }} Account</div>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="logout()" [disabled]="loggingOut" [title]="loggingOut ? 'Signing out…' : 'Sign out'">
+        <span *ngIf="!loggingOut">⏻</span>
+        <span *ngIf="loggingOut" class="logout-spinner"></span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Main ────────────────────────────────────────────────── -->
+  <main class="main-content">
+    <!-- Mobile topbar -->
+    <div class="mobile-topbar">
+      <button class="hamburger" (click)="toggleSidebar()">☰</button>
+      <span class="mobile-logo">RevPay</span>
+      <a routerLink="/notifications" class="mobile-notif">
+        🔔
+        <span class="notif-dot" *ngIf="unreadCount > 0"></span>
+      </a>
+    </div>
+
+    <!-- Page content injected here -->
+    <router-outlet></router-outlet>
+  </main>
+</div>
