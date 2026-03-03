@@ -1,0 +1,88 @@
+<div class="legal-layout">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a class="logo" routerLink="/">
+        <span class="logo-mark">R</span>
+        <span class="logo-text">RevPay</span>
+      </a>
+      <div class="nav-links">
+        <a routerLink="/terms-conditions" class="btn-ghost">Terms of Service</a>
+        <a routerLink="/login" class="btn-primary">Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Banner -->
+  <div class="legal-hero">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="hero-content">
+      <div class="legal-badge">🔒 Legal</div>
+      <h1>Privacy Policy</h1>
+      <p>How RevPay collects, uses, and protects your personal information.</p>
+      <div class="last-updated">Last updated: {{ lastUpdated }}</div>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="legal-body">
+
+    <!-- Sidebar TOC -->
+    <aside class="toc">
+      <div class="toc-label">On This Page</div>
+      <ul>
+        <li *ngFor="let s of sections">
+          <a [routerLink]="[]" [fragment]="s.id">{{ s.title }}</a>
+        </li>
+      </ul>
+      <div class="toc-divider"></div>
+      <a routerLink="/terms-conditions" class="toc-link-alt">
+        Terms of Service →
+      </a>
+    </aside>
+
+    <!-- Content -->
+    <main class="legal-content">
+
+      <!-- Intro card -->
+      <div class="intro-card">
+        <span class="intro-icon">🛡</span>
+        <p>
+          At RevPay, your privacy is fundamental to everything we do.
+          This policy explains in plain language what data we collect, why we collect it,
+          and how you can control it. We will never sell your personal data to third parties.
+        </p>
+      </div>
+
+      <!-- Sections -->
+      <div class="section-block" *ngFor="let section of sections" [id]="section.id">
+        <h2>{{ section.title }}</h2>
+        <div class="subsection" *ngFor="let item of section.content">
+          <h3>{{ item.subtitle }}</h3>
+          <p>{{ item.body }}</p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="legal-footer">
+    <div class="footer-inner">
+      <div class="logo">
+        <span class="logo-mark sm">R</span>
+        <span class="logo-text">RevPay</span>
+      </div>
+      <p>© 2025 RevPay. All rights reserved.</p>
+      <div class="footer-links">
+        <a routerLink="/">Home</a>
+        <a routerLink="/terms-conditions">Terms</a>
+        <a routerLink="/login">Sign In</a>
+        <a routerLink="/register">Register</a>
+      </div>
+    </div>
+  </footer>
+
+</div>

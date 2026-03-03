@@ -17,6 +17,24 @@ export const routes: Routes = [
     path: 'forgot-password',
     loadComponent: () => import('./pages/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
   },
+  {
+    path: 'privacy-policy',
+    loadComponent: () => import('./pages/legal/privacy-policy/privacy-policy.component')
+      .then(m => m.PrivacyPolicyComponent),
+  },
+  {
+    path: 'terms-conditions',
+    loadComponent: () => import('./pages/legal/terms-conditions/terms-conditions.component')
+      .then(m => m.TermsConditionsComponent),
+  },
+  { path: 'contact',  
+    loadComponent: () => import('./pages/legal/contact/contact.component')
+      .then(m => m.ContactComponent) 
+  },
+  { path: 'security', 
+    loadComponent: () => import('./pages/legal/security/security.component')
+      .then(m => m.SecurityComponent) 
+  },
 
   {
      path: 'payment-methods',

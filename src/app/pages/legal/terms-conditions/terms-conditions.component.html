@@ -1,0 +1,113 @@
+<div class="legal-layout">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a class="logo" routerLink="/">
+        <span class="logo-mark">R</span>
+        <span class="logo-text">RevPay</span>
+      </a>
+      <div class="nav-links">
+        <a routerLink="/privacy-policy" class="btn-ghost">Privacy Policy</a>
+        <a routerLink="/login" class="btn-primary">Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Banner -->
+  <div class="legal-hero">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="hero-content">
+      <div class="legal-badge">📄 Legal</div>
+      <h1>Terms of Service</h1>
+      <p>The rules and guidelines that govern your use of the RevPay platform.</p>
+      <div class="last-updated">Last updated: {{ lastUpdated }}</div>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="legal-body">
+
+    <!-- Sidebar TOC -->
+    <aside class="toc">
+      <div class="toc-label">On This Page</div>
+      <ul>
+        <li *ngFor="let s of sections">
+          <a [routerLink]="[]" [fragment]="s.id">{{ s.title }}</a>
+        </li>
+      </ul>
+      <div class="toc-divider"></div>
+      <a routerLink="/privacy-policy" class="toc-link-alt">
+        Privacy Policy →
+      </a>
+    </aside>
+
+    <!-- Content -->
+    <main class="legal-content">
+
+      <!-- Important notice card -->
+      <div class="intro-card warning">
+        <span class="intro-icon">⚠</span>
+        <p>
+          Please read these Terms of Service carefully before using RevPay.
+          By creating an account or using our services, you agree to be legally
+          bound by these terms. If you do not agree, do not use RevPay.
+        </p>
+      </div>
+
+      <!-- Quick summary cards -->
+      <div class="summary-grid">
+        <div class="summary-card">
+          <span>✅</span>
+          <div>
+            <strong>You Can</strong>
+            <p>Send & receive money, manage cards, create invoices, apply for loans</p>
+          </div>
+        </div>
+        <div class="summary-card">
+          <span>❌</span>
+          <div>
+            <strong>You Cannot</strong>
+            <p>Use RevPay for illegal activity, fraud, money laundering, or platform abuse</p>
+          </div>
+        </div>
+        <div class="summary-card">
+          <span>🔔</span>
+          <div>
+            <strong>Important</strong>
+            <p>You're responsible for your account security and the accuracy of your transactions</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sections -->
+      <div class="section-block" *ngFor="let section of sections" [id]="section.id">
+        <h2>{{ section.title }}</h2>
+        <div class="subsection" *ngFor="let item of section.content">
+          <h3>{{ item.subtitle }}</h3>
+          <p>{{ item.body }}</p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="legal-footer">
+    <div class="footer-inner">
+      <div class="logo">
+        <span class="logo-mark sm">R</span>
+        <span class="logo-text">RevPay</span>
+      </div>
+      <p>© 2025 RevPay. All rights reserved.</p>
+      <div class="footer-links">
+        <a routerLink="/">Home</a>
+        <a routerLink="/privacy-policy">Privacy Policy</a>
+        <a routerLink="/login">Sign In</a>
+        <a routerLink="/register">Register</a>
+      </div>
+    </div>
+  </footer>
+
+</div>

@@ -1,0 +1,116 @@
+<!-- ── Hero ──────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">Get in Touch</div>
+    <h1 class="hero-title">We're here to <span class="gradient-text">help you</span></h1>
+    <p class="hero-sub">
+      Have a question, a problem, or just want to say hi?
+      Our team is always a message away.
+    </p>
+  </div>
+</section>
+
+<!-- ── Contact Channels ──────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="channels-grid">
+      <a class="channel-card" *ngFor="let ch of channels"
+        [href]="ch.link" [style.--ch-color]="ch.color">
+        <div class="ch-icon-wrap">
+          <span class="ch-icon">{{ ch.icon }}</span>
+        </div>
+        <div class="ch-body">
+          <div class="ch-title">{{ ch.title }}</div>
+          <div class="ch-desc">{{ ch.desc }}</div>
+          <div class="ch-value">{{ ch.value }}</div>
+        </div>
+        <div class="ch-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Team Section ──────────────────────────────────────────── -->
+<section class="section team-section">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="section-title">Meet the Team</h2>
+      <p class="section-sub">
+        RevPay is built by a passionate team of developers who care deeply
+        about secure, reliable digital payments.
+      </p>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-card" *ngFor="let member of team; let i = index"
+        [style.animation-delay]="(i * 0.08) + 's'">
+        <div class="member-avatar" [style.background]="member.color">
+          {{ member.initials }}
+        </div>
+        <div class="member-info">
+          <div class="member-name">{{ member.name }}</div>
+          <div class="member-role">{{ member.role }}</div>
+        </div>
+        <a *ngIf="member.email" [href]="'mailto:' + member.email"
+          class="member-email-btn" title="Email {{ member.name }}">
+          ✉
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ───────────────────────────────────────────────────── -->
+<section class="section faq-section">
+  <div class="container narrow">
+    <div class="section-head">
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <p class="section-sub">Quick answers to common questions.</p>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item" *ngFor="let faq of faqs" [class.open]="faq.open">
+        <button class="faq-question" (click)="toggleFaq(faq)">
+          <span>{{ faq.question }}</span>
+          <span class="faq-chevron">{{ faq.open ? '−' : '+' }}</span>
+        </button>
+        <div class="faq-answer" *ngIf="faq.open">
+          {{ faq.answer }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Bottom CTA ────────────────────────────────────────────── -->
+<section class="section cta-section">
+  <div class="container">
+    <div class="cta-card">
+      <div class="cta-glow"></div>
+      <h2 class="cta-title">Still need help?</h2>
+      <p class="cta-sub">
+        Our support team typically responds within a few hours on business days.
+      </p>
+      <a href="mailto:support@revpay.in" class="cta-btn">
+        📧 Email Support
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ────────────────────────────────────────────────── -->
+<footer class="page-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-brand">RevPay</span>
+      <nav class="footer-links">
+        <a routerLink="/privacy-policy">Privacy Policy</a>
+        <a routerLink="/terms-conditions">Terms of Service</a>
+        <a routerLink="/security">Security</a>
+        <a routerLink="/contact">Contact</a>
+      </nav>
+      <span class="footer-copy">© {{ currentYear }} RevPay. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
