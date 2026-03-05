@@ -1,0 +1,173 @@
+<div class="page-layout">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Transactions</h1>
+      <p class="page-sub">{{ pagination.totalRecords }} total records</p>
+    </div>
+    <div class="export-btns">
+      <button class="btn-outline" (click)="exportFile('CSV')" [disabled]="exporting === 'CSV'">
+        {{ exporting === 'CSV' ? 'Exporting…' : '↓ CSV' }}
+      </button>
+      <button class="btn-outline" (click)="exportFile('PDF')" [disabled]="exporting === 'PDF'">
+        {{ exporting === 'PDF' ? 'Exporting…' : '↓ PDF' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <div class="search-wrap">
+      <input type="text" [(ngModel)]="search"
+        placeholder="Search by name, email or ID…"
+        (keyup.enter)="applyFilters()"/>
+    </div>
+    <select class="filter-select" [(ngModel)]="typeFilter">
+      <option *ngFor="let o of typeOptions" [value]="o.value">{{ o.label }}</option>
+    </select>
+    <select class="filter-select" [(ngModel)]="statusFilter">
+      <option *ngFor="let o of statusOptions" [value]="o.value">{{ o.label }}</option>
+    </select>
+    <input type="date" class="filter-date" [(ngModel)]="dateFrom" title="From date"/>
+    <input type="date" class="filter-date" [(ngModel)]="dateTo"   title="To date"/>
+    <button class="btn-primary"  (click)="applyFilters()">Apply</button>
+    <button class="btn-outline"  (click)="clearFilters()">Clear</button>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+
+    <!-- Skeleton -->
+    <ng-container *ngIf="loading">
+      <div class="skeleton-row" *ngFor="let i of [1,2,3,4,5]"></div>
+    </ng-container>
+
+    <!-- Empty state -->
+    <div class="empty-state" *ngIf="!loading && transactions.length === 0">
+      <span class="empty-icon"><mat-icon>currency_rupee</mat-icon></span>
+      <p>No transactions found.</p>
+      <button class="btn-outline" (click)="clearFilters()">Clear filters</button>
+    </div>
+
+    <!-- Data table -->
+    <table class="data-table" *ngIf="!loading && transactions.length > 0">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Counterparty</th>
+          <th>Note</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="data-row" *ngFor="let t of transactions" (click)="openDetail(t)">
+          <!-- Type badge -->
+          <td>
+            <span class="type-badge" [ngClass]="txnClass(t.type)">
+              {{ txnIcon(t.type) }} {{ txnLabel(t.type) }}
+            </span>
+          </td>
+
+          <!-- Counterparty -->
+          <td>
+            <div class="cp-name">{{ counterpartyName(t) }}</div>
+            <div class="cp-email">{{ t.counterparty?.email ?? '' }}</div>
+          </td>
+
+          <!-- Note -->
+          <td class="note-cell">{{ t.note || '—' }}</td>
+
+          <!-- Amount -->
+          <td>
+            <span class="txn-amount"
+              [class.positive]="displayAmount(t) > 0"
+              [class.negative]="displayAmount(t) < 0">
+              {{ displayAmount(t) > 0 ? '+' : '' }}₹{{ t.amount | number:'1.2-2' }}
+            </span>
+          </td>
+
+          <!-- Status -->
+          <td>
+            <span class="status-pill" [ngClass]="statusClass(t.status)">
+              {{ t.status }}
+            </span>
+          </td>
+
+          <!-- Date -->
+          <td class="date-cell">{{ t.createdAt | date:'dd MMM y, h:mm a' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination" *ngIf="pagination.totalPages > 1">
+    <button class="pg-btn" (click)="goToPage(pagination.currentPage - 1)"
+      [disabled]="!pagination.hasPrevious">‹ Prev</button>
+
+    <button class="pg-btn" *ngFor="let p of pageArray"
+      [class.active]="p === pagination.currentPage"
+      (click)="goToPage(p)">
+      {{ p + 1 }}
+    </button>
+
+    <button class="pg-btn" (click)="goToPage(pagination.currentPage + 1)"
+      [disabled]="!pagination.hasNext">Next ›</button>
+  </div>
+
+</div>
+
+<!-- ── Detail Modal ────────────────────────────────────────── -->
+<div class="modal-backdrop" *ngIf="showDetail" (click)="closeDetail()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-head">
+      <h3>Transaction Details</h3>
+      <button class="modal-close" (click)="closeDetail()">✕</button>
+    </div>
+    <div class="modal-body" *ngIf="selectedTransaction as t">
+      <div class="detail-row">
+        <span class="dl">Transaction ID</span>
+        <span class="dv">#{{ t.transactionId }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="dl">Type</span>
+        <span class="type-badge" [ngClass]="txnClass(t.type)">
+          {{ txnIcon(t.type) }} {{ txnLabel(t.type) }}
+        </span>
+      </div>
+      <div class="detail-row">
+        <span class="dl">Status</span>
+        <span class="status-pill" [ngClass]="statusClass(t.status)">{{ t.status }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="dl">Amount</span>
+        <span class="dv txn-amount" [class.positive]="displayAmount(t)>0" [class.negative]="displayAmount(t)<0">
+          {{ displayAmount(t) > 0 ? '+' : '' }}₹{{ t.amount | number:'1.2-2' }} {{ t.currency }}
+        </span>
+      </div>
+      <div class="detail-row" *ngIf="t.counterparty">
+        <span class="dl">{{ t.type === 'SEND' ? 'To' : 'From' }}</span>
+        <span class="dv">{{ t.counterparty.fullName }} ({{ t.counterparty.email }})</span>
+      </div>
+      <div class="detail-row" *ngIf="t.note">
+        <span class="dl">Note</span>
+        <span class="dv">{{ t.note }}</span>
+      </div>
+      <div class="detail-row" *ngIf="t.balanceAfter !== undefined">
+        <span class="dl">Balance After</span>
+        <span class="dv">₹{{ t.balanceAfter | number:'1.2-2' }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="dl">Date</span>
+        <span class="dv">{{ t.createdAt | date:'dd MMM y, h:mm a' }}</span>
+      </div>
+      <div class="detail-row" *ngIf="t.completedAt">
+        <span class="dl">Completed At</span>
+        <span class="dv">{{ t.completedAt | date:'dd MMM y, h:mm a' }}</span>
+      </div>
+    </div>
+  </div>
+</div>
