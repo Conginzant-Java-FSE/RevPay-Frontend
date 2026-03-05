@@ -1,0 +1,242 @@
+<div class="page-layout">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Invoices</h1>
+      <p class="page-sub">Create, send, and track customer invoices</p>
+    </div>
+    <button class="btn-primary" (click)="openCreate()">＋ Create Invoice</button>
+  </div>
+
+  <div class="alert success" *ngIf="successMsg">{{ successMsg }}</div>
+  <div class="alert error" *ngIf="error">{{ error }}</div>
+
+  <!-- Summary cards -->
+  <div class="summary-grid" *ngIf="summary">
+    <div class="summary-card paid">
+      <span class="sc-icon"><mat-icon>check_circle</mat-icon></span>
+      <div class="sc-label">Paid</div>
+      <div class="sc-amount">₹{{ summary.totalPaid | number:'1.2-2' }}</div>
+      <div class="sc-count">{{ summary.countPaid }} invoices</div>
+    </div>
+    <div class="summary-card unpaid">
+      <span class="sc-icon"><mat-icon>hourglass_bottom</mat-icon></span>
+      <div class="sc-label">Unpaid</div>
+      <div class="sc-amount">₹{{ summary.totalUnpaid | number:'1.2-2' }}</div>
+      <div class="sc-count">{{ summary.countUnpaid }} invoices</div>
+    </div>
+    <div class="summary-card overdue">
+      <span class="sc-icon"><mat-icon>warning</mat-icon></span>
+      <div class="sc-label">Overdue</div>
+      <div class="sc-amount">₹{{ summary.totalOverdue | number:'1.2-2' }}</div>
+      <div class="sc-count">{{ summary.countOverdue }} invoices</div>
+    </div>
+  </div>
+
+  <!-- Status filter -->
+  <div class="filter-tabs">
+    <button class="filter-tab" *ngFor="let opt of statusOptions" [class.active]="activeFilter === opt.value"
+      (click)="filterBy(opt.value)">{{ opt.label }}</button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-row" *ngIf="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Invoice list -->
+  <div *ngIf="!loading">
+    <div class="empty-state" *ngIf="invoices.length === 0">
+      <span class="empty-icon"><mat-icon>receipt</mat-icon></span>
+      <p>No invoices found.</p>
+      <button class="btn-primary" (click)="openCreate()">+ Create Invoice</button>
+    </div>
+
+    <div class="invoice-list">
+      <div class="invoice-item" *ngFor="let inv of invoices">
+        <div class="inv-left">
+          <div class="inv-customer">{{ inv.customerName }}</div>
+          <div class="inv-email">{{ inv.customerEmail }}</div>
+          <div class="inv-due">Due: {{ inv.dueDate | date:'dd MMM y' }}</div>
+        </div>
+        <div class="inv-mid">
+          <span class="status-pill" [class]="statusColor(inv.status)">{{ inv.status }}</span>
+        </div>
+        <div class="inv-amount">₹{{ inv.totalAmount | number:'1.2-2' }}</div>
+        <div class="inv-actions">
+          <button class="action-link" (click)="openDetail(inv)">View</button>
+          <button class="action-link" *ngIf="inv.status === 'DRAFT'" (click)="sendInvoice(inv)">Send</button>
+          <button class="action-link" *ngIf="inv.status === 'SENT'" (click)="markPaid(inv)">Mark Paid</button>
+          <button class="action-link danger" *ngIf="inv.status !== 'PAID' && inv.status !== 'CANCELLED'"
+            (click)="cancelInvoice(inv)">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Invoice Modal -->
+  <div class="modal-backdrop" *ngIf="showCreateModal" (click)="closeCreate()">
+    <div class="modal wide" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <h3>Create Invoice</h3>
+        <button class="close-btn" (click)="closeCreate()">✕</button>
+      </div>
+      <form [formGroup]="createForm" (ngSubmit)="submitCreate()" class="modal-body scrollable">
+        <div class="alert error" *ngIf="error">{{ error }}</div>
+
+        <div class="modal-section-title">Customer Details</div>
+        <div formGroupName="customer">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Customer Name</label>
+              <input type="text" formControlName="name" />
+              <span class="field-error"
+                *ngIf="createForm.get('customer.name')?.touched && createForm.get('customer.name')?.invalid">
+                Required
+              </span>
+            </div>
+            <div class="form-group">
+              <label>Customer Email</label>
+              <input type="email" formControlName="email" />
+              <span class="field-error"
+                *ngIf="createForm.get('customer.email')?.touched && createForm.get('customer.email')?.invalid">
+                Valid email required
+              </span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Customer Address <span class="optional">(optional)</span></label>
+            <textarea formControlName="address" rows="2"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-section-title">Invoice Settings</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Payment Terms</label>
+            <select formControlName="paymentTerms">
+              <option value="NET_7">Net 7 days</option>
+              <option value="NET_15">Net 15 days</option>
+              <option value="NET_30">Net 30 days</option>
+              <option value="NET_60">Net 60 days</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Due Date</label>
+            <input type="date" formControlName="dueDate" />
+            <span class="field-error" *ngIf="cf('dueDate')?.touched && cf('dueDate')?.invalid">Required</span>
+          </div>
+        </div>
+
+        <div class="modal-section-title">Line Items</div>
+        <div formArrayName="lineItems">
+          <div class="line-item-row" *ngFor="let item of lineItems.controls; let i = index" [formGroupName]="i">
+            <div class="form-group flex-3">
+              <label *ngIf="i === 0">Description</label>
+              <input type="text" formControlName="description" placeholder="Service or product" />
+            </div>
+            <div class="form-group flex-1">
+              <label *ngIf="i === 0">Qty</label>
+              <input type="number" formControlName="quantity" min="1" />
+            </div>
+            <div class="form-group flex-1">
+              <label *ngIf="i === 0">Unit Price</label>
+              <input type="number" formControlName="unitPrice" placeholder="0.00" min="0" />
+            </div>
+            <div class="form-group flex-1">
+              <label *ngIf="i === 0">Tax %</label>
+              <input type="number" formControlName="taxRate" placeholder="18" min="0" max="100" />
+            </div>
+            <div class="form-group flex-1">
+              <label *ngIf="i === 0">Total</label>
+              <div class="line-total">₹{{ lineTotal(i) | number:'1.2-2' }}</div>
+            </div>
+            <button type="button" class="remove-line" (click)="removeLineItem(i)"
+              *ngIf="lineItems.length > 1">✕</button>
+          </div>
+        </div>
+        <button type="button" class="btn-ghost sm" (click)="addLineItem()">＋ Add Line</button>
+
+        <div class="invoice-total-row">
+          <span>Invoice Total</span>
+          <strong>₹{{ invoiceTotal | number:'1.2-2' }}</strong>
+        </div>
+
+        <div class="form-group">
+          <label>Notes <span class="optional">(optional)</span></label>
+          <textarea formControlName="notes" rows="2" placeholder="Payment instructions, thank you note…"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" (click)="closeCreate()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="submitting">
+            {{ submitting ? 'Creating…' : 'Create Invoice' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Invoice Detail Modal -->
+  <div class="modal-backdrop" *ngIf="showDetailModal && selectedInvoice" (click)="closeDetail()">
+    <div class="modal wide" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <h3>Invoice #{{ selectedInvoice.id }}</h3>
+        <button class="close-btn" (click)="closeDetail()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-row">
+          <span class="dl">Customer</span>
+          <span class="dv">{{ selectedInvoice.customer?.name ?? selectedInvoice.customerName }}</span></div>
+        <div class="detail-row">
+          <span class="dl">Email</span>
+          <span class="dv">{{ selectedInvoice.customer?.email ?? selectedInvoice.customerEmail }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="dl">Status</span>
+          <span class="status-pill"[class]="statusColor(selectedInvoice.status)">{{ selectedInvoice.status }}</span></div>
+        <div class="detail-row">
+          <span class="dl">Due Date</span>
+          <span class="dv">{{ selectedInvoice.dueDate | date:'dd MMM y' }}</span></div>
+        <div class="detail-row">
+          <span class="dl">Total</span>
+          <span class="dv big-amount">₹{{ selectedInvoice.totalAmount | number:'1.2-2' }}</span>
+        </div>
+        <table class="mini-table" *ngIf="selectedInvoice.lineItems?.length">
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>Qty</th>
+              <th>Unit Price</th>
+              <th>Tax</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of selectedInvoice.lineItems">
+              <td>{{ item.description }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>₹{{ item.unitPrice | number:'1.2-2' }}</td>
+              <td>{{ item.taxRate }}%</td>
+              <td>₹{{ item.lineTotal | number:'1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="detail-row" *ngIf="selectedInvoice.notes"><span class="dl">Notes</span><span class="dv">{{
+            selectedInvoice.notes }}</span></div>
+      </div>
+    </div>
+  </div>
+
+  <app-confirm-modal
+    [visible]="confirmVisible"
+    [title]="confirmTitle"
+    [message]="confirmMessage"
+    [icon]="confirmIcon"
+    [okLabel]="confirmOkLabel"
+    [okClass]="confirmOkClass"
+    (confirmed)="onConfirmOk()"
+    (cancelled)="onConfirmCancel()">
+  </app-confirm-modal>
+
+
+</div>
