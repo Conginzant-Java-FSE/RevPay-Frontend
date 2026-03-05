@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { ShellComponent } from './shared/shell/shell.component';
+import { businessGuard } from './core/guards/business.guard';
 
 export const routes: Routes = [
   {
@@ -34,6 +35,12 @@ export const routes: Routes = [
       { path: 'settings', loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent) },
       { path: 'requests', loadComponent: () => import('./pages/requests/requests.component').then(m => m.RequestsComponent) },
       { path: 'send-money', loadComponent: () => import('./pages/send-money/send-money.component').then(m => m.SendMoneyComponent) },
+
+      // business routes
+        { path: 'invoices',   canActivate: [businessGuard], loadComponent: () => import('./pages/invoices/invoices.component').then(m => m.InvoicesComponent) },
+      { path: 'loans',      canActivate: [businessGuard], loadComponent: () => import('./pages/loans/loans.component').then(m => m.LoansComponent) },
+      { path: 'analytics',  canActivate: [businessGuard], loadComponent: () => import('./pages/analytics/analytics.component').then(m => m.AnalyticsComponent) },
+    
     ]
   },
 
