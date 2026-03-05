@@ -32,8 +32,10 @@ export const routes: Routes = [
       { path: 'notifications', loadComponent: () => import('./pages/notifications/notifications.component').then(m => m.NotificationsComponent) },
       { path: 'settings', loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent) },
       { path: 'requests', loadComponent: () => import('./pages/requests/requests.component').then(m => m.RequestsComponent) },
+      { path: 'send-money', loadComponent: () => import('./pages/send-money/send-money.component').then(m => m.SendMoneyComponent) },
     ]
   },
+
   
   { path: '**', redirectTo: '' },
 ];
