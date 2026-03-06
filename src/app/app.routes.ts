@@ -30,6 +30,7 @@ export const routes: Routes = [
     component: ShellComponent,
     canActivate: [AuthGuard],
     children: [
+      { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent) },
       { path: 'transactions', loadComponent: () => import('./pages/transactions/transactions.component').then(m => m.TransactionsComponent) },
       { path: 'notifications', loadComponent: () => import('./pages/notifications/notifications.component').then(m => m.NotificationsComponent) },
       { path: 'settings', loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent) },
@@ -37,7 +38,7 @@ export const routes: Routes = [
       { path: 'send-money', loadComponent: () => import('./pages/send-money/send-money.component').then(m => m.SendMoneyComponent) },
 
       // business routes
-        { path: 'invoices',   canActivate: [businessGuard], loadComponent: () => import('./pages/invoices/invoices.component').then(m => m.InvoicesComponent) },
+      { path: 'invoices',   canActivate: [businessGuard], loadComponent: () => import('./pages/invoices/invoices.component').then(m => m.InvoicesComponent) },
       { path: 'loans',      canActivate: [businessGuard], loadComponent: () => import('./pages/loans/loans.component').then(m => m.LoansComponent) },
       { path: 'analytics',  canActivate: [businessGuard], loadComponent: () => import('./pages/analytics/analytics.component').then(m => m.AnalyticsComponent) },
     
