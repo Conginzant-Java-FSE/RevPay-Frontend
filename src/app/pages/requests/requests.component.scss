@@ -1321,3 +1321,27 @@ $bg:       #050810;
     width: 100%;
   }
 }
+
+/* Empty state icon */
+.empty-icon mat-icon {
+  font-size: 48px;
+  color: #64748b; /* muted slate tone */
+  opacity: 0.7;
+}
+
+
+/* Request item icon container */
+.req-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Actual icon */
+.req-icon mat-icon {
+  font-size: 22px;
+  color: #3b82f6; /* fintech blue */
+}

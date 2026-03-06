@@ -13,26 +13,26 @@
     <nav class="nav-menu">
       <!-- Personal + Business routes -->
       <a class="nav-item" routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
-        <span class="nav-icon">⊞</span> Dashboard
+        <mat-icon class="nav-icon">dashboard</mat-icon> Dashboard
       </a>
       <a class="nav-item" routerLink="/transactions" routerLinkActive="active">
-        <span class="nav-icon">↕</span> Transactions
+        <mat-icon class="nav-icon">swap_horiz</mat-icon> Transactions
       </a>
       <a class="nav-item" routerLink="/payment-methods" routerLinkActive="active">
-        <span class="nav-icon">💳</span> Payment Methods
+        <mat-icon class="nav-icon">credit_card</mat-icon> Payment Methods
       </a>
       <a class="nav-item" routerLink="/requests" routerLinkActive="active">
-        <span class="nav-icon">📩</span> Requests
+        <mat-icon class="nav-icon">request_page</mat-icon> Requests
       </a>
       <a class="nav-item" routerLink="/send-money" routerLinkActive="active">
-        <span class="nav-icon">↗</span> Send Money
+        <mat-icon class="nav-icon">send</mat-icon> Send Money
       </a>
       <a class="nav-item" routerLink="/notifications" routerLinkActive="active">
-        <span class="nav-icon">🔔</span> Notifications
+        <mat-icon class="nav-icon">notifications</mat-icon> Notifications
         <span class="nav-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
       </a>
       <a class="nav-item" routerLink="/settings" routerLinkActive="active">
-        <span class="nav-icon">⚙</span> Settings
+        <mat-icon class="nav-icon">settings</mat-icon> Settings
       </a>
 
       <!-- Business only -->
@@ -40,13 +40,13 @@
         <div class="nav-divider"></div>
         <div class="nav-section-label">Business</div>
         <a class="nav-item" routerLink="/invoices" routerLinkActive="active">
-          <span class="nav-icon">🧾</span> Invoices
+          <mat-icon class="nav-icon">receipt_long</mat-icon> Invoices
         </a>
         <a class="nav-item" routerLink="/loans" routerLinkActive="active">
-          <span class="nav-icon">🏦</span> Loans
+          <mat-icon class="nav-icon">account_balance</mat-icon> Loans
         </a>
         <a class="nav-item" routerLink="/analytics" routerLinkActive="active">
-          <span class="nav-icon">📊</span> Analytics
+          <mat-icon class="nav-icon">analytics</mat-icon> Analytics
         </a>
       </ng-container>
     </nav>

@@ -4,11 +4,12 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { PaymentMethodService } from '../../core/services/payment-method.service';
 import { PaymentCard } from '../../core/models';
 import { ConfirmModalComponent } from '../../shared/confirm-modal/confirm-modal.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-payment-methods',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ConfirmModalComponent],
+  imports: [CommonModule, ReactiveFormsModule, ConfirmModalComponent, MatIconModule],
   templateUrl: './payment-methods.component.html',
   styleUrls: ['./payment-methods.component.scss'],
 })
@@ -29,7 +30,7 @@ export class PaymentMethodsComponent implements OnInit {
   confirmVisible  = false;
   confirmTitle    = '';
   confirmMessage  = '';
-  confirmIcon     = '⚠';
+  confirmIcon     = 'warning';
   confirmOkLabel  = 'Confirm';
   confirmOkClass: 'danger' | 'primary' = 'danger';
   private confirmCallback: (() => void) | null = null;
@@ -141,7 +142,7 @@ export class PaymentMethodsComponent implements OnInit {
     this.showConfirm(
       'Delete Card',
       `Remove "${cardNickname}" from your payment methods? This cannot be undone.`,
-      '🗑', 'Delete Card', 'danger',
+      'delete', 'Delete Card', 'danger',
       () => {
         this.pmService.delete(cardId).subscribe({
           next:  () => { this.successMsg = 'Card removed.'; this.load(); setTimeout(() => this.successMsg = '', 3000); },

@@ -17,13 +17,13 @@
   <!-- Cards -->
   <div class="cards-grid" *ngIf="!loading">
     <div class="empty-state" *ngIf="cards.length === 0">
-      <span class="empty-icon">💳</span>
+      <span class="empty-icon"><mat-icon>credit_card</mat-icon></span>
       <p>No cards added yet.</p>
       <button class="btn-primary" (click)="openAdd()">Add your first card</button>
     </div>
 
     <div class="card-item" *ngFor="let card of cards" [class.default]="card.isDefault">
-      <div class="card-brand">{{ cardBrandIcon(card.cardType) }} {{ card.cardType }}</div>
+      <div class="card-brand"><mat-icon class="card-icon">credit_card</mat-icon> {{ card.cardType }}</div>
       <div class="card-number">•••• •••• •••• {{ card.lastFour }}</div>
       <div class="card-meta">
         <span>{{ card.nickname }}</span>

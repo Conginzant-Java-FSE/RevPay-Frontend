@@ -37,6 +37,7 @@
       </a>
       <a routerLink="/login" class="btn-outline btn-lg">Sign In</a>
     </div>
+    <p class="hero-note">No credit card required · Free personal accounts</p>
   </div>
 
   <!-- Floating card illustration -->
@@ -47,7 +48,7 @@
       <div class="card-number">•••• •••• •••• 4291</div>
       <div class="card-footer">
         <span>Likhith Mandem</span>
-        <span>12/30</span>
+        <span>12/27</span>
       </div>
     </div>
     <div class="card-float card-back"></div>
@@ -86,7 +87,7 @@
     <h2 class="section-title">Everything you need,<br />nothing you don't.</h2>
     <div class="features-grid">
       <div class="feature-card" *ngFor="let f of features">
-        <div class="feature-icon">{{ f.icon }}</div>
+        <div class="feature-icon"><mat-icon>{{ f.icon }}</mat-icon></div>
         <h3>{{ f.title }}</h3>
         <p>{{ f.desc }}</p>
       </div>
@@ -135,8 +136,8 @@
     <div class="footer-links">
       <a routerLink="/privacy-policy">Privacy</a>
       <a routerLink="/terms-conditions">Terms</a>
-      <a href="#">Security</a>
-      <a href="#">Contact</a>
+      <a routerLink="/security">Security</a>
+      <a routerLink="/contact">Contact</a>
     </div>
   </div>
 </footer>

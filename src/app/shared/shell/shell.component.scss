@@ -102,7 +102,7 @@ $sidebar-w: 230px;
   &.active   { color: $text; background: rgba($accent, 0.1); color: lighten($accent, 5%); }
 }
 
-.nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+// .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
 .nav-badge {
   margin-left: auto;
   background: #ef4444;
@@ -224,4 +224,15 @@ $sidebar-w: 230px;
   width: 8px; height: 8px;
   background: #ef4444;
   border-radius: 50%;
+}
+
+.nav-icon {
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }

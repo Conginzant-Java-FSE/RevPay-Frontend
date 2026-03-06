@@ -664,3 +664,87 @@ $success: #22c55e;
   from { opacity: 0; transform: translateY(-8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* Icon container */
+.type-icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Icon */
+.type-icon mat-icon {
+  font-size: 32px;
+  color: #2563eb; /* fintech blue */
+}
+
+
+
+
+.input-icon mat-icon {
+  font-size: 20px;
+  color: #94a3b8; /* muted */
+  transition: all 0.25s ease;
+}
+
+/* On focus */
+.input-wrap:focus-within .input-icon mat-icon {
+  color: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* Error state */
+.input-wrap.error .input-icon mat-icon {
+  color: #dc2626;
+}
+
+.toggle-pw mat-icon {
+  font-size: 20px;
+  color: #94a3b8;
+  transition: all 0.25s ease;
+}
+
+.toggle-pw:hover mat-icon {
+  color: #2563eb;
+  transform: scale(1.05);
+}
+
+.toggle-pw:active mat-icon {
+  transform: scale(0.95);
+}
+
+.banner-icon mat-icon {
+  font-size: 22px;
+}
+
+/* Error banner */
+.error-banner .banner-icon mat-icon {
+  color: #dc2626;
+}
+
+/* Success banner */
+.success-banner .banner-icon mat-icon {
+  color: #16a34a;
+}
+
+.custom-select .input-icon mat-icon {
+  font-size: 20px;
+  color: #94a3b8;
+}
+
+.select-arrow mat-icon {
+  font-size: 22px;
+  color: #94a3b8;
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.select-arrow.rotated mat-icon {
+  transform: rotate(180deg);
+  color: #2563eb;
+}
+
+.input-wrap:focus-within .input-icon mat-icon {
+  text-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+}

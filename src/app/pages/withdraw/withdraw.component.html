@@ -1,0 +1,111 @@
+<div class="page-layout centered">
+  <div class="send-card">
+
+    <div class="loading-row" *ngIf="loading"><div class="spinner"></div></div>
+
+    <!-- No bank account linked -->
+    <div class="no-cards" *ngIf="!loading && !bankAccount">
+      <span class="empty-icon">🏦</span>
+      <h2>No Bank Account Linked</h2>
+      <p>You need to link a bank account in Settings before you can withdraw.</p>
+      <button class="btn-primary" (click)="goToAddBank()">Go to Settings</button>
+      <button class="btn-ghost" (click)="goToDashboard()">← Back to Dashboard</button>
+    </div>
+
+    <!-- Step: Form -->
+    <ng-container *ngIf="!loading && bankAccount && step === 'form'">
+      <div class="send-header">
+        <button class="back-btn" (click)="goToDashboard()">← Back</button>
+        <h1>Withdraw</h1>
+        <div class="balance-chip">Balance: ₹{{ walletBalance | number:'1.2-2' }}</div>
+      </div>
+
+      <form [formGroup]="form">
+        <div class="alert error" *ngIf="error">{{ error }}</div>
+
+        <!-- Bank account info -->
+        <div class="bank-info-card">
+          <span class="bank-info-icon">🏦</span>
+          <div>
+            <div class="bank-info-name">{{ bankAccount.bankName }}</div>
+            <div class="bank-info-num">Account ····{{ bankAccount.accountNumber | slice:-4 }}</div>
+          </div>
+          <span class="bank-info-badge">Linked Bank</span>
+        </div>
+
+        <!-- Quick amount buttons -->
+        <div class="form-group">
+          <label>Withdrawal Amount (₹)</label>
+          <div class="quick-amounts">
+            <button type="button" *ngFor="let a of quickAmounts"
+              [class.selected]="form.value.amount == a"
+              (click)="setAmount(a)">
+              ₹{{ a | number }}
+            </button>
+          </div>
+          <div class="amount-input-wrap" style="margin-top:0.75rem">
+            <span class="currency-prefix">₹</span>
+            <input type="number" formControlName="amount" placeholder="Or enter custom amount"/>
+          </div>
+          <span class="field-error" *ngIf="f('amount')?.touched && f('amount')?.invalid">
+            Minimum ₹1 required
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label>Note <span class="optional">(optional)</span></label>
+          <input type="text" formControlName="note" placeholder="Purpose of withdrawal"/>
+        </div>
+
+        <button type="button" class="btn-primary full" (click)="goToConfirm()">Continue →</button>
+      </form>
+    </ng-container>
+
+    <!-- Step: Confirm + PIN -->
+    <ng-container *ngIf="step === 'confirm'">
+      <div class="send-header">
+        <button class="back-btn" (click)="step='form'">← Back</button>
+        <h1>Confirm Withdrawal</h1>
+      </div>
+
+      <div class="confirm-card">
+        <div class="confirm-row"><span>To</span><strong>{{ bankAccount.bankName }} ····{{ bankAccount.accountNumber | slice:-4 }}</strong></div>
+        <div class="confirm-row"><span>Amount</span><strong class="big-amount">₹{{ form.value.amount | number:'1.2-2' }}</strong></div>
+        <div class="confirm-row" *ngIf="form.value.note"><span>Note</span><span>{{ form.value.note }}</span></div>
+        <div class="confirm-row"><span>Balance After</span><span>₹{{ (walletBalance - form.value.amount) | number:'1.2-2' }}</span></div>
+      </div>
+
+      <div class="form-group">
+        <label>Transaction PIN</label>
+        <div class="pin-input-wrap">
+          <input [type]="showPin ? 'text' : 'password'" formControlName="pin"
+            placeholder="••••" maxlength="6" [formControl]="$any(form.get('pin'))"/>
+          <button type="button" class="pin-toggle" (click)="showPin = !showPin">
+            {{ showPin ? '🙈' : '👁' }}
+          </button>
+        </div>
+        <span class="field-error" *ngIf="f('pin')?.touched && f('pin')?.invalid">
+          Enter your 4–6 digit PIN
+        </span>
+      </div>
+
+      <div class="alert error" *ngIf="error">{{ error }}</div>
+      <button class="btn-primary full" (click)="submit()" [disabled]="submitting">
+        {{ submitting ? 'Processing…' : 'Withdraw Money' }}
+      </button>
+    </ng-container>
+
+    <!-- Step: Success -->
+    <div class="success-screen" *ngIf="step === 'success'">
+      <div class="success-icon">✅</div>
+      <h2>Withdrawal Successful!</h2>
+      <p>₹{{ withdrawnAmount | number:'1.2-2' }} is being transferred to your bank account.</p>
+      <div class="success-amount">-₹{{ withdrawnAmount | number:'1.2-2' }}</div>
+      <div class="success-actions">
+        <button class="btn-outline" (click)="step='form'; form.reset()">Withdraw Again</button>
+        <button class="btn-primary" (click)="goToDashboard()">Go to Dashboard</button>
+      </div>
+    </div>
+
+  </div>
+</div>

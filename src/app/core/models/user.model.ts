@@ -15,10 +15,8 @@ export interface UserProfile {
   walletBalance: number;
   currency: string;
   profileComplete: boolean;
-  // personal only
   dob?: string;
   address?: string;
-  // business only
   businessName?: string;
   businessType?: 'SOLE_PROPRIETOR' | 'LLC' | 'CORPORATION' | 'PARTNERSHIP' | 'NON_PROFIT';
   taxId?: string;
@@ -26,8 +24,8 @@ export interface UserProfile {
   businessStatus?: 'ACTIVE' | 'PENDING_VERIFICATION' | 'SUSPENDED';
   contactPhone?: string;
   website?: string;
-  // linked bank
   bankAccount?: BankAccountSummary;
+  mtpinSet: boolean;
 }
 
 export interface ApiResponse<T> {

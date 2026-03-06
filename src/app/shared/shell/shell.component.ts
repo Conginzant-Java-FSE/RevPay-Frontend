@@ -5,11 +5,12 @@ import { UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { UserProfile } from '../../core/models';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet, MatIconModule],
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss'],
 })

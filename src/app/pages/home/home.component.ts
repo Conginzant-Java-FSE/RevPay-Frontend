@@ -1,43 +1,44 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, MatIconModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
   features = [
     {
-      icon: '⚡',
+      icon: 'flash_on',
       title: 'Instant Transfers',
       desc: 'Send and receive money in real-time to anyone, anywhere.',
     },
     {
-      icon: '🔒',
+      icon: 'lock',
       title: 'Bank-Grade Security',
       desc: 'End-to-end encryption, 2FA, and transaction PIN protection.',
     },
     {
-      icon: '📊',
+      icon: 'analytics',
       title: 'Smart Analytics',
       desc: 'Visual dashboards and reports to track every dollar.',
     },
     {
-      icon: '🏢',
+      icon: 'business',
       title: 'Business Tools',
       desc: 'Invoicing, loan management, and payment acceptance built-in.',
     },
     {
-      icon: '🔔',
+      icon: 'notifications',
       title: 'Live Notifications',
       desc: 'Stay informed with real-time alerts on all activity.',
     },
     {
-      icon: '💳',
+      icon: 'credit_card',
       title: 'Multi-Card Support',
       desc: 'Link multiple cards and bank accounts seamlessly.',
     },

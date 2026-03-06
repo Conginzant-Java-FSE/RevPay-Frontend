@@ -26,11 +26,11 @@
   <!-- Incoming -->
   <div *ngIf="!loading && activeTab === 'incoming'">
     <div class="empty-state" *ngIf="incoming.length === 0">
-      <span class="empty-icon">📩</span><p>No incoming requests.</p>
+      <span class="empty-icon"><mat-icon>archive</mat-icon></span><p>No incoming requests.</p>
     </div>
     <div class="request-list">
       <div class="request-item" *ngFor="let r of incoming">
-        <div class="req-icon">📩</div>
+        <div class="req-icon"><mat-icon>archive</mat-icon></div>
         <div class="req-info">
           <div class="req-from">{{ r.from?.name ?? '—' }} <span class="req-email">{{ r.from?.email }}</span></div>
           <div class="req-purpose">{{ r.purpose }}</div>
@@ -51,11 +51,11 @@
   <!-- Outgoing -->
   <div *ngIf="!loading && activeTab === 'outgoing'">
     <div class="empty-state" *ngIf="outgoing.length === 0">
-      <span class="empty-icon">📤</span><p>No outgoing requests.</p>
+      <span class="empty-icon"><mat-icon>unarchive</mat-icon></span><p>No outgoing requests.</p>
     </div>
     <div class="request-list">
       <div class="request-item" *ngFor="let r of outgoing">
-        <div class="req-icon">📤</div>
+        <div class="req-icon"><mat-icon>unarchive</mat-icon></div>
         <div class="req-info">
           <div class="req-from">To: {{ r.to?.name ?? '—' }} <span class="req-email">{{ r.to?.email }}</span></div>
           <div class="req-purpose">{{ r.purpose }}</div>

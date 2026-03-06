@@ -358,3 +358,67 @@ blockquote {
     &:hover { text-decoration: underline; }
   }
 }
+
+/* Base trust icons */
+.trust-row mat-icon {
+  font-size: 18px;
+  margin-right: 6px;
+  // vertical-align: middle;
+}
+
+
+/* Security (SSL) – secure blue */
+.security-data mat-icon {
+  color: #2563eb;
+}
+
+
+/* PCI Compliant – trust green */
+.pci-compliant mat-icon {
+  color: #16a34a;
+}
+
+
+/* Real-time – energetic amber */
+.real-time mat-icon {
+  color: #f59e0b;
+}
+
+
+
+/* Left side input icons (email, key) */
+.input-icon mat-icon {
+  font-size: 20px;
+  color: #94a3b8; /* muted slate */
+  transition: all 0.25s ease;
+}
+
+/* When input is focused */
+.input-wrap:focus-within .input-icon mat-icon {
+  color: #2563eb; /* fintech blue */
+  transform: translateY(-1px);
+}
+
+/* Error state */
+.input-wrap.error .input-icon mat-icon {
+  color: #dc2626; /* red */
+}
+
+
+/* Toggle password icon */
+.toggle-pw mat-icon {
+  font-size: 20px;
+  color: #94a3b8;
+  transition: all 0.25s ease;
+}
+
+/* Hover effect */
+.toggle-pw:hover mat-icon {
+  color: #2563eb;
+  transform: scale(1.05);
+}
+
+/* Active click effect */
+.toggle-pw:active mat-icon {
+  transform: scale(0.95);
+}

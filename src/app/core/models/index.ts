@@ -91,6 +91,8 @@ export interface MoneyRequest {
 // ── Notification ──────────────────────────────────────────────
 export type NotificationType =
   | 'TRANSACTION'
+  | 'TRANSACTION_RECEIVED'
+  | 'TRANSACTION_SENT'
   | 'MONEY_REQUEST'
   | 'CARD_CHANGE'
   | 'LOW_BALANCE'

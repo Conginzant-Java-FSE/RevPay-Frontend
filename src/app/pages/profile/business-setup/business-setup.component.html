@@ -1,0 +1,178 @@
+<div class="setup-page">
+
+  <!-- Left Panel -->
+  <div class="setup-left">
+    <div class="brand">
+      <span class="brand-icon">₹</span>
+      <span class="brand-name">RevPay</span>
+    </div>
+    <div class="left-content">
+      <h1>Set up your<br><span class="highlight">business account</span></h1>
+      <p>Provide your business details to unlock invoicing, loans, and analytics.</p>
+
+      <div class="steps-nav">
+        <div class="step-item" [class.active]="step === 1" [class.done]="step > 1">
+          <div class="step-dot">
+            <span *ngIf="step <= 1">1</span>
+            <svg *ngIf="step > 1" viewBox="0 0 20 20" fill="currentColor"><path d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"/></svg>
+          </div>
+          <div class="step-label">
+            <strong>Business Info</strong>
+            <small>Company & registration details</small>
+          </div>
+        </div>
+        <div class="step-connector" [class.done]="step > 1"></div>
+        <div class="step-item" [class.active]="step === 2">
+          <div class="step-dot">2</div>
+          <div class="step-label">
+            <strong>Bank Details</strong>
+            <small>Link your business bank account</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending verification notice -->
+      <div class="notice">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+        <p>Business accounts are reviewed for verification after setup.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="setup-right">
+    <div class="form-card">
+
+      <div class="form-header">
+        <h2>{{ step === 1 ? 'Business Information' : 'Bank Account Details' }}</h2>
+        <span class="step-tag">Step {{ step }} of 2</span>
+      </div>
+
+      <form [formGroup]="form">
+
+        <!-- ── Step 1: Business Info ─────────────────────── -->
+        <div *ngIf="step === 1" class="step-fields">
+
+          <div class="field">
+            <label>Username <span class="req">*</span></label>
+            <input formControlName="username" type="text" placeholder="e.g. rev_pay_corp"
+              [class.error]="isInvalid('username')" />
+            <span class="err-msg" *ngIf="isInvalid('username')">
+              <ng-container *ngIf="form.get('username')?.errors?.['required']">Username is required</ng-container>
+              <ng-container *ngIf="form.get('username')?.errors?.['minlength']">Minimum 3 characters</ng-container>
+              <ng-container *ngIf="form.get('username')?.errors?.['pattern']">Only letters, numbers and underscore allowed</ng-container>
+            </span>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Business Name <span class="req">*</span></label>
+              <input formControlName="businessName" type="text" placeholder="e.g. RevPay Corp"
+                [class.error]="isInvalid('businessName')" />
+              <span class="err-msg" *ngIf="isInvalid('businessName')">Required</span>
+            </div>
+            <div class="field">
+              <label>Business Type <span class="req">*</span></label>
+              <select formControlName="businessType" [class.error]="isInvalid('businessType')">
+                <option value="" disabled>Select type</option>
+                <option *ngFor="let t of businessTypes" [value]="t.value">{{ t.label }}</option>
+              </select>
+              <span class="err-msg" *ngIf="isInvalid('businessType')">Required</span>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Tax ID / EIN <span class="req">*</span></label>
+              <input formControlName="taxId" type="text" placeholder="e.g. DGDFHD4541"
+                [class.error]="isInvalid('taxId')" />
+              <span class="err-msg" *ngIf="isInvalid('taxId')">Required</span>
+            </div>
+            <div class="field">
+              <label>Contact Phone <span class="req">*</span></label>
+              <input formControlName="contactPhone" type="tel" placeholder="e.g. 9786015270"
+                [class.error]="isInvalid('contactPhone')" />
+              <span class="err-msg" *ngIf="isInvalid('contactPhone')">Required</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Business Address <span class="req">*</span></label>
+            <textarea formControlName="address" rows="3" placeholder="Full business address"
+              [class.error]="isInvalid('address')"></textarea>
+            <span class="err-msg" *ngIf="isInvalid('address')">Required</span>
+          </div>
+
+          <div class="field">
+            <label>Website <span class="optional">(optional)</span></label>
+            <input formControlName="website" type="text" placeholder="e.g. vsmidhun.github.io" />
+          </div>
+
+          <button class="btn-primary" type="button" (click)="nextStep()">
+            Continue to Bank Details
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+          </button>
+        </div>
+
+        <!-- ── Step 2: Bank Details ──────────────────────── -->
+        <div *ngIf="step === 2" class="step-fields">
+
+          <div class="field-row">
+            <div class="field">
+              <label>Account Holder Name <span class="req">*</span></label>
+              <input formControlName="accountHolderName" type="text" placeholder="Name on bank account"
+                [class.error]="isInvalid('accountHolderName')" />
+              <span class="err-msg" *ngIf="isInvalid('accountHolderName')">Required</span>
+            </div>
+            <div class="field">
+              <label>Bank Name <span class="req">*</span></label>
+              <input formControlName="bankName" type="text" placeholder="e.g. Indian Bank"
+                [class.error]="isInvalid('bankName')" />
+              <span class="err-msg" *ngIf="isInvalid('bankName')">Required</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Account Number <span class="req">*</span></label>
+            <input formControlName="accountNumber" type="text" placeholder="Enter account number"
+              [class.error]="isInvalid('accountNumber')" />
+            <span class="err-msg" *ngIf="isInvalid('accountNumber')">Valid account number required</span>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>IFSC Code <span class="req">*</span></label>
+              <input formControlName="ifscCode" type="text" placeholder="e.g. ABCD12345"
+                [class.error]="isInvalid('ifscCode')" />
+              <span class="err-msg" *ngIf="isInvalid('ifscCode')">Required</span>
+            </div>
+            <div class="field">
+              <label>Account Type <span class="req">*</span></label>
+              <select formControlName="accountType">
+                <option *ngFor="let t of accountTypes" [value]="t">{{ t }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="error-banner" *ngIf="errorMsg">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+            {{ errorMsg }}
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-secondary" type="button" (click)="prevStep()">
+              <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>
+              Back
+            </button>
+            <button class="btn-primary" type="button" (click)="submit()" [disabled]="loading">
+              <span class="spinner" *ngIf="loading"></span>
+              <span>{{ loading ? 'Creating...' : 'Complete Setup' }}</span>
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+</div>

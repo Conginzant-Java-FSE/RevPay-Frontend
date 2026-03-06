@@ -5,11 +5,12 @@ import { UserService } from '../../core/services/user.service';
 import { TransactionService } from '../../core/services/transaction.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { UserProfile, Transaction, Notification } from '../../core/models';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, MatIconModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
@@ -76,14 +77,6 @@ export class DashboardComponent implements OnInit {
     return 'Good night';
   }
 
-  get greetingEmoji(): string {
-    const h = new Date().getHours();
-    if (h >= 5  && h < 12) return '☀️';
-    if (h >= 12 && h < 17) return '👋';
-    if (h >= 17 && h < 21) return '🌆';
-    return '🌙';
-  }
-
   get isBusinessPendingVerification(): boolean {
     return this.profile?.accountType === 'BUSINESS'
         && this.profile?.businessStatus === 'PENDING_VERIFICATION';
@@ -117,9 +110,16 @@ export class DashboardComponent implements OnInit {
 
   notifIcon(type: string): string {
     const m: Record<string, string> = {
-      TRANSACTION: '💸', MONEY_REQUEST: '📩', CARD_CHANGE: '💳',
-      LOW_BALANCE: '⚠', SECURITY: '🔒', INVOICE: '🧾', LOAN: '🏦',
+      TRANSACTION: 'payments',
+      TRANSACTION_RECEIVED: 'payments',
+      TRANSACTION_SENT: 'payments',
+      MONEY_REQUEST: 'request_page',
+      CARD_CHANGE: 'credit_card',
+      LOW_BALANCE: 'warning',
+      SECURITY: 'lock',
+      INVOICE: 'receipt_long',
+      LOAN: 'account_balance',
     };
-    return m[type] ?? '🔔';
+    return m[type] ?? 'notifications';
   }
 }

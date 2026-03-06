@@ -57,6 +57,7 @@ export class AuthService {
 
   clearSession(): void {
     localStorage.removeItem('revpay_token');
+    localStorage.removeItem('revpay_mpin_set');
   }
 
   logout(): Observable<void> {

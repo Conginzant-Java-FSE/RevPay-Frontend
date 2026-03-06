@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { MatIconModule } from '@angular/material/icon';
 
 function passwordMatch(control: AbstractControl) {
   const pw = control.get('password')?.value;
@@ -13,7 +14,7 @@ function passwordMatch(control: AbstractControl) {
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, MatIconModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
@@ -55,7 +56,9 @@ export class RegisterComponent {
   }
 
   nextStep() {
+    // Validate step 2 fields
     const step2Fields = ['fullName', 'email', 'phone'];
+    // if (this.accountType === 'BUSINESS') step2Fields.push('businessName', 'businessType');
     step2Fields.forEach(f => this.form.get(f)?.markAsTouched());
     const step2Valid = step2Fields.every(f => this.form.get(f)?.valid);
     if (step2Valid) this.step = 3;
@@ -81,6 +84,8 @@ export class RegisterComponent {
       next: (res) => {
         this.loading = false;
         this.success = 'Registration successful! Redirecting you to login...';
+
+        // Auto-dismiss after 3 seconds then navigate
         setTimeout(() => {
           this.success = '';
           this.router.navigate(['/login']);

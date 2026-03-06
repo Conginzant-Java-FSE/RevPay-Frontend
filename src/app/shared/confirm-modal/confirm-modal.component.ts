@@ -1,15 +1,16 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-confirm-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule],
   template: `
     <div class="modal-backdrop" *ngIf="visible" (click)="onCancel()">
       <div class="modal sm confirm-modal" (click)="$event.stopPropagation()">
         <div class="modal-head">
-          <span class="confirm-icon">{{ icon }}</span>
+          <span class="confirm-icon"><mat-icon>{{ icon }}</mat-icon></span>
           <h3>{{ title }}</h3>
         </div>
         <div class="modal-body">
@@ -119,7 +120,7 @@ export class ConfirmModalComponent {
   @Input() visible  = false;
   @Input() title    = 'Are you sure?';
   @Input() message  = '';
-  @Input() icon     = '⚠';
+  @Input() icon     = 'warning';
   @Input() okLabel  = 'Confirm';
   @Input() okClass: 'danger' | 'primary' = 'primary';
   @Input() cancelLabel = 'Cancel';

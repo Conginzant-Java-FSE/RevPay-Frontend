@@ -14,18 +14,18 @@
         "RevPay has completely transformed how we manage business payments. The speed and transparency are unmatched."
       </blockquote>
       <div class="testimonial-author">
-        <div class="author-avatar">ML</div>
+        <div class="author-avatar">MVS</div>
         <div>
-          <div class="author-name">Mandem Likhith</div>
-          <div class="author-role">Founder, RevPay.com</div>
+          <div class="author-name">Midhun V S</div>
+          <div class="author-role">CEO, RevPay.com</div>
         </div>
       </div>
     </div>
 
     <div class="trust-row">
-      <span>🔒 256-bit SSL</span>
-      <span>✓ PCI Compliant</span>
-      <span>⚡ Real-time</span>
+      <span class="security-data"><mat-icon>security</mat-icon> 256-bit SSL</span>
+      <span class="pci-compliant"><mat-icon>check_circle</mat-icon> PCI Compliant</span>
+      <span class="real-time"><mat-icon>flash_on</mat-icon> Real-time</span>
     </div>
   </div>
 
@@ -38,14 +38,14 @@
       </div>
 
       <div class="error-banner" *ngIf="error">
-        <span>⚠</span> {{ error }}
+        <span><mat-icon>warning</mat-icon></span> {{ error }}
       </div>
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
         <div class="field-group">
           <label for="emailOrPhone">Email or Phone Number</label>
           <div class="input-wrap" [class.error]="emailOrPhone.invalid && emailOrPhone.touched">
-            <span class="input-icon">✉</span>
+            <span class="input-icon"><mat-icon>email</mat-icon></span>
             <input
               id="emailOrPhone"
               type="text"
@@ -65,7 +65,7 @@
             <a routerLink="/forgot-password" class="forgot-link">Forgot password?</a>
           </div>
           <div class="input-wrap" [class.error]="password.invalid && password.touched">
-            <span class="input-icon">🔑</span>
+            <span class="input-icon"><mat-icon>key</mat-icon></span>
             <input
               id="password"
               [type]="showPassword ? 'text' : 'password'"
@@ -74,7 +74,7 @@
               autocomplete="current-password"
             />
             <button type="button" class="toggle-pw" (click)="togglePassword()">
-              {{ showPassword ? '🙈' : '👁' }}
+              <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
           </div>
           <div class="field-error" *ngIf="password.invalid && password.touched">
