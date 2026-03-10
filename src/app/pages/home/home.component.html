@@ -1,0 +1,143 @@
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" routerLink="/">
+      <span class="logo-mark">R</span>
+      <span class="logo-text">RevPay</span>
+    </a>
+    <div class="nav-links">
+      <a routerLink="/login" class="btn-ghost">Sign In</a>
+      <a routerLink="/register" class="btn-primary">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Trusted Payments Platform
+    </div>
+    <h1 class="hero-title">
+      Money Movement,<br />
+      <span class="gradient-text">Reimagined.</span>
+    </h1>
+    <p class="hero-sub">
+      RevPay gives individuals and businesses a unified platform to send, receive,
+      manage and grow — all with enterprise-grade security.
+    </p>
+    <div class="hero-cta">
+      <a routerLink="/register" class="btn-primary btn-lg">
+        Open Free Account
+        <span class="btn-arrow">→</span>
+      </a>
+      <a routerLink="/login" class="btn-outline btn-lg">Sign In</a>
+    </div>
+    <p class="hero-note">No credit card required · Free personal accounts</p>
+  </div>
+
+  <!-- Floating card illustration -->
+  <div class="hero-card-wrap">
+    <div class="card-float card-main">
+      <div class="card-chip"></div>
+      <div class="card-network">●●</div>
+      <div class="card-number">•••• •••• •••• 4291</div>
+      <div class="card-footer">
+        <span>Likhith Mandem</span>
+        <span>12/27</span>
+      </div>
+    </div>
+    <div class="card-float card-back"></div>
+
+    <div class="pill pill-1">
+      <span class="pill-icon">↗</span>
+      <div>
+        <div class="pill-label">Sent</div>
+        <div class="pill-amount">₹1,250.00</div>
+      </div>
+    </div>
+    <div class="pill pill-2">
+      <span class="pill-icon success">↙</span>
+      <div>
+        <div class="pill-label">Received</div>
+        <div class="pill-amount success">+₹3,800.00</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<section class="stats-strip">
+  <div class="stats-inner">
+    <div class="stat-item" *ngFor="let s of stats">
+      <div class="stat-value">{{ s.value }}</div>
+      <div class="stat-label">{{ s.label }}</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="section-inner">
+    <div class="section-label">Platform Features</div>
+    <h2 class="section-title">Everything you need,<br />nothing you don't.</h2>
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let f of features">
+        <div class="feature-icon"><mat-icon>{{ f.icon }}</mat-icon></div>
+        <h3>{{ f.title }}</h3>
+        <p>{{ f.desc }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACCOUNT TYPES -->
+<section class="account-types">
+  <div class="section-inner two-col">
+    <div class="account-card personal">
+      <div class="account-badge">Personal</div>
+      <h3>For everyday money management</h3>
+      <ul>
+        <li>✓ Send &amp; receive money instantly</li>
+        <li>✓ Wallet with multi-card support</li>
+        <li>✓ Full transaction history</li>
+        <li>✓ Real-time notifications</li>
+        <li>✓ PIN &amp; security settings</li>
+      </ul>
+      <a routerLink="/register" class="btn-outline-white">Create Personal Account</a>
+    </div>
+    <div class="account-card business">
+      <div class="account-badge gold">Business</div>
+      <h3>For growing businesses</h3>
+      <ul>
+        <li>✓ Everything in Personal</li>
+        <li>✓ Invoice creation &amp; tracking</li>
+        <li>✓ Business loan applications</li>
+        <li>✓ Revenue analytics &amp; reports</li>
+        <li>✓ Customer payment acceptance</li>
+      </ul>
+      <a routerLink="/register" class="btn-gold">Create Business Account</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="logo">
+      <span class="logo-mark">R</span>
+      <span class="logo-text">RevPay</span>
+    </div>
+    <p>© 2026 RevPay. All rights reserved. Secure payments platform.</p>
+    <div class="footer-links">
+      <a routerLink="/privacy-policy">Privacy</a>
+      <a routerLink="/terms-conditions">Terms</a>
+      <a routerLink="/security">Security</a>
+      <a routerLink="/contact">Contact</a>
+    </div>
+  </div>
+</footer>

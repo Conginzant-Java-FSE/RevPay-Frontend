@@ -1,0 +1,127 @@
+<div class="page-layout">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Money Requests</h1>
+      <p class="page-sub">Manage incoming and outgoing payment requests</p>
+    </div>
+    <button class="btn-primary" (click)="activeTab='new'">＋ New Request</button>
+  </div>
+
+  <div class="alert success" *ngIf="successMsg">{{ successMsg }}</div>
+  <div class="alert error" *ngIf="error">{{ error }}</div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab" [class.active]="activeTab==='incoming'" (click)="activeTab='incoming'">
+      Incoming
+      <span class="tab-badge" *ngIf="pendingIncoming().length > 0">{{ pendingIncoming().length }}</span>
+    </button>
+    <button class="tab" [class.active]="activeTab==='outgoing'" (click)="activeTab='outgoing'">Outgoing</button>
+    <button class="tab" [class.active]="activeTab==='new'" (click)="activeTab='new'">Request Money</button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-row" *ngIf="loading"><div class="spinner"></div></div>
+
+  <!-- Incoming -->
+  <div *ngIf="!loading && activeTab === 'incoming'">
+    <div class="empty-state" *ngIf="incoming.length === 0">
+      <span class="empty-icon"><mat-icon>archive</mat-icon></span><p>No incoming requests.</p>
+    </div>
+    <div class="request-list">
+      <div class="request-item" *ngFor="let r of incoming">
+        <div class="req-icon"><mat-icon>archive</mat-icon></div>
+        <div class="req-info">
+          <div class="req-from">{{ r.from?.name ?? '—' }} <span class="req-email">{{ r.from?.email }}</span></div>
+          <div class="req-purpose">{{ r.purpose }}</div>
+          <div class="req-date">{{ r.createdAt | date:'dd MMM y' }}</div>
+        </div>
+        <div class="req-amount">₹{{ r.amount | number:'1.2-2' }}</div>
+        <span class="status-pill" [class]="r.status.toLowerCase()">{{ r.status }}</span>
+        <div class="req-actions" *ngIf="r.status === 'PENDING'">
+          <button class="btn-primary sm" (click)="openAccept(r)"
+            [disabled]="actionLoading === r.requestId">Accept</button>
+          <button class="btn-danger sm" (click)="decline(r)"
+            [disabled]="actionLoading === r.requestId">Decline</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Outgoing -->
+  <div *ngIf="!loading && activeTab === 'outgoing'">
+    <div class="empty-state" *ngIf="outgoing.length === 0">
+      <span class="empty-icon"><mat-icon>unarchive</mat-icon></span><p>No outgoing requests.</p>
+    </div>
+    <div class="request-list">
+      <div class="request-item" *ngFor="let r of outgoing">
+        <div class="req-icon"><mat-icon>unarchive</mat-icon></div>
+        <div class="req-info">
+          <div class="req-from">To: {{ r.to?.name ?? '—' }} <span class="req-email">{{ r.to?.email }}</span></div>
+          <div class="req-purpose">{{ r.purpose }}</div>
+          <div class="req-date">{{ r.createdAt | date:'dd MMM y' }}</div>
+        </div>
+        <div class="req-amount">₹{{ r.amount | number:'1.2-2' }}</div>
+        <span class="status-pill" [class]="r.status.toLowerCase()">{{ r.status }}</span>
+        <div class="req-actions" *ngIf="r.status === 'PENDING'">
+          <button class="btn-danger sm" (click)="cancel(r)"
+            [disabled]="actionLoading === r.requestId">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Request Form -->
+  <div class="form-card" *ngIf="activeTab === 'new'">
+    <h3 class="form-card-title">Request Money From Someone</h3>
+    <form [formGroup]="requestForm" (ngSubmit)="submitRequest()">
+      <div class="form-group">
+        <label>Recipient (Email / Phone / Username)</label>
+        <input type="text" formControlName="recipient" placeholder="their@email.com"/>
+        <span class="field-error" *ngIf="f('recipient')?.touched && f('recipient')?.invalid">Required</span>
+      </div>
+      <div class="form-group">
+        <label>Amount (₹)</label>
+        <input type="number" formControlName="amount" placeholder="500"/>
+        <span class="field-error" *ngIf="f('amount')?.touched && f('amount')?.invalid">Minimum ₹1 required</span>
+      </div>
+      <div class="form-group">
+        <label>Purpose</label>
+        <input type="text" formControlName="purpose" placeholder="Dinner split, rent, etc."/>
+        <span class="field-error" *ngIf="f('purpose')?.touched && f('purpose')?.invalid">Required</span>
+      </div>
+      <button type="submit" class="btn-primary" [disabled]="submitting">
+        {{ submitting ? 'Sending…' : 'Send Request' }}
+      </button>
+    </form>
+  </div>
+
+  <!-- PIN modal for accepting -->
+  <div class="modal-backdrop" *ngIf="pinModalFor" (click)="closePin()">
+    <div class="modal sm" (click)="$event.stopPropagation()">
+      <div class="modal-head"><h3>Enter Transaction PIN</h3><button class="close-btn" (click)="closePin()">✕</button></div>
+      <div class="modal-body">
+        <p class="pin-desc">You're accepting ₹{{ pinModalFor!.amount | number:'1.2-2' }} from <strong>{{ pinModalFor!.from?.name }}</strong>.</p>
+        <div class="form-group">
+          <label>Transaction PIN</label>
+          <input type="password" [(ngModel)]="pin" placeholder="••••" maxlength="6"/>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-ghost" (click)="closePin()">Cancel</button>
+          <button class="btn-primary" (click)="confirmAccept()" [disabled]="!pin">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-confirm-modal
+    [visible]="confirmVisible"
+    [title]="confirmTitle"
+    [message]="confirmMessage"
+    [icon]="confirmIcon"
+    [okLabel]="confirmOkLabel"
+    [okClass]="confirmOkClass"
+    (confirmed)="onConfirmOk()"
+    (cancelled)="onConfirmCancel()">
+  </app-confirm-modal>

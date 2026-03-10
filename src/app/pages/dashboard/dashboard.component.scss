@@ -1,0 +1,370 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+$accent:   #4f8ef7;
+$accent2:  #7c3aed;
+$green:    #22c55e;
+$text:     #e8eaf0;
+$muted:    #6b7280;
+$surface:  #0d1117;
+$border:   rgba(255,255,255,0.07);
+
+// ── Layout ────────────────────────────────────────────────────
+.dashboard-content {
+  padding: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  font-family: 'DM Sans', sans-serif;
+}
+
+// ── Loading ───────────────────────────────────────────────────
+.loading-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+}
+
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid rgba($accent, 0.2);
+  border-top-color: $accent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ── Top bar ───────────────────────────────────────────────────
+.topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.page-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.25rem;
+}
+
+.page-sub { font-size: 0.88rem; color: $muted; margin: 0; }
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.icon-btn {
+  position: relative;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 10px;
+  width: 38px; height: 38px;
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: border-color 0.2s;
+  &:hover { border-color: rgba(255,255,255,0.18); }
+}
+
+.notif-dot {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 7px; height: 7px;
+  background: #ef4444;
+  border-radius: 50%;
+  border: 1px solid #050810;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, $accent, darken($accent, 10%));
+  color: #fff;
+  border: none;
+  padding: 0.55rem 1.1rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-block;
+  &.sm { padding: 0.45rem 0.9rem; font-size: 0.82rem; }
+  &:hover { box-shadow: 0 6px 20px rgba($accent, 0.35); transform: translateY(-1px); }
+}
+
+// ── Warning banner ────────────────────────────────────────────
+.banner-warning {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(#f59e0b, 0.08);
+  border: 1px solid rgba(#f59e0b, 0.25);
+  border-radius: 12px;
+  padding: 0.85rem 1.25rem;
+  font-size: 0.88rem;
+  color: #fcd34d;
+  margin-bottom: 1.5rem;
+
+  .banner-icon { font-size: 1rem; flex-shrink: 0; }
+  strong { color: #fbbf24; }
+}
+
+// ── Row layouts ───────────────────────────────────────────────
+.top-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+
+  @media (max-width: 800px) { grid-template-columns: 1fr; }
+}
+
+.bottom-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 1.25rem;
+
+  @media (max-width: 800px) { grid-template-columns: 1fr; }
+}
+
+// ── Wallet card ───────────────────────────────────────────────
+.wallet-card {
+  background: linear-gradient(135deg, #1a3a6e 0%, #0f2044 60%, #0a1628 100%);
+  border: 1px solid rgba($accent, 0.2);
+  border-radius: 20px;
+  padding: 1.75rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.wallet-bg-circle {
+  position: absolute;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba($accent, 0.18), transparent 70%);
+  top: -60px; right: -40px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.wallet-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.wallet-balance {
+  font-family: 'Syne', sans-serif;
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.wallet-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.meta-icon {
+  font-size: 1rem;
+  &.pending { color: #f59e0b; }
+  &.success { color: $green; }
+  &.bank    { color: #a78bfa; }
+}
+
+.meta-label { font-size: 0.68rem; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 0.06em; }
+.meta-value { font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.85); }
+
+.meta-divider {
+  width: 1px; height: 28px;
+  background: rgba(255,255,255,0.12);
+}
+
+// ── Quick actions ─────────────────────────────────────────────
+.quick-actions-card {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 20px;
+  padding: 1.5rem;
+}
+
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1rem 0.5rem;
+  border-radius: 14px;
+  border: 1px solid $border;
+  background: rgba(255,255,255,0.02);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: rgba(var(--action-color), 0.35);
+    background: rgba(255,255,255,0.05);
+    transform: translateY(-2px);
+  }
+}
+
+.action-icon {
+  font-size: 1.3rem;
+  color: var(--action-color);
+}
+
+.action-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: $muted;
+}
+
+// ── Transactions card ─────────────────────────────────────────
+.transactions-card,
+.notifications-card {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 20px;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.see-all {
+  font-size: 0.8rem;
+  color: $accent;
+  text-decoration: none;
+  transition: opacity 0.2s;
+  &:hover { opacity: 0.75; }
+}
+
+// Transactions list
+.txn-list { display: flex; flex-direction: column; gap: 0.1rem; }
+
+.txn-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid $border;
+  &:last-child { border: none; }
+}
+
+.txn-icon-wrap {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+
+  &.received { background: rgba($green, 0.12); color: $green; }
+  &.sent     { background: rgba(#ef4444, 0.12); color: #ef4444; }
+  &.topup    { background: rgba($accent, 0.12); color: $accent; }
+}
+
+.txn-info { flex: 1; min-width: 0; }
+.txn-name { font-size: 0.85rem; font-weight: 600; color: $text; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.txn-note { font-size: 0.75rem; color: $muted; }
+
+.txn-right { text-align: right; flex-shrink: 0; }
+.txn-amount {
+  font-size: 0.88rem; font-weight: 700;
+  &.positive { color: $green; }
+  &.negative { color: #ef4444; }
+}
+.txn-date { font-size: 0.7rem; color: $muted; margin-top: 0.1rem; }
+
+// Notifications list
+.notif-list { display: flex; flex-direction: column; gap: 0.1rem; }
+
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid $border;
+  position: relative;
+  &:last-child { border: none; }
+  &.unread .notif-message { color: #fff; }
+}
+
+// .notif-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+.notif-info { flex: 1; min-width: 0; }
+.notif-message { font-size: 0.82rem; color: $muted; line-height: 1.4; }
+.notif-time { font-size: 0.7rem; color: darken($muted, 5%); margin-top: 0.2rem; }
+
+.unread-dot {
+  width: 7px; height: 7px;
+  background: $accent;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.txn-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  color: $muted;
+  font-size: 0.85rem;
+  span { font-size: 1.8rem; margin-bottom: 0.5rem; opacity: 0.5; }
+  p { margin: 0; }
+}
+
+.notif-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f6fb;
+  color: #1976d2;
+}

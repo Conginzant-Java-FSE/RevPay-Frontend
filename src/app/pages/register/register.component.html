@@ -1,0 +1,273 @@
+<div class="auth-layout">
+
+  <!-- Left panel -->
+  <div class="auth-left">
+    <a routerLink="/" class="logo">
+      <span class="logo-mark">R</span>
+      <span class="logo-text">RevPay</span>
+    </a>
+
+    <div class="auth-left-body">
+      <div class="orb orb-a"></div>
+      <div class="orb orb-b"></div>
+
+      <div class="steps-list">
+        <div class="step-item" [class.active]="step >= 1" [class.done]="step > 1">
+          <div class="step-dot">{{ step > 1 ? '✓' : '1' }}</div>
+          <div>
+            <div class="step-label">Account Type</div>
+            <div class="step-desc">Personal or Business</div>
+          </div>
+        </div>
+        <div class="step-connector" [class.done]="step > 1"></div>
+        <div class="step-item" [class.active]="step >= 2" [class.done]="step > 2">
+          <div class="step-dot">{{ step > 2 ? '✓' : '2' }}</div>
+          <div>
+            <div class="step-label">Your Details</div>
+            <div class="step-desc">Name, email, phone</div>
+          </div>
+        </div>
+        <div class="step-connector" [class.done]="step > 2"></div>
+        <div class="step-item" [class.active]="step >= 3">
+          <div class="step-dot">3</div>
+          <div>
+            <div class="step-label">Secure Account</div>
+            <div class="step-desc">Create your password</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="left-footer">
+        Already have an account?
+        <a routerLink="/login">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right panel -->
+  <div class="auth-right">
+    <div class="form-wrap">
+
+      <!-- STEP 1: Account Type -->
+      <div *ngIf="step === 1" class="step-panel">
+        <div class="form-header">
+          <h1>Create your account</h1>
+          <p>What best describes you?</p>
+        </div>
+
+        <div class="account-type-cards">
+          <button type="button" class="type-card" (click)="selectAccountType('PERSONAL')">
+            <div class="type-icon"><mat-icon>person</mat-icon></div>
+            <div class="type-title">Personal</div>
+            <div class="type-desc">Send, receive, and manage money for everyday use.</div>
+            <div class="type-arrow">→</div>
+          </button>
+          <button type="button" class="type-card" (click)="selectAccountType('BUSINESS')">
+            <div class="type-icon"><mat-icon>business</mat-icon></div>
+            <div class="type-title">Business</div>
+            <div class="type-desc">Invoicing, loans, analytics, and team payments.</div>
+            <div class="type-arrow">→</div>
+          </button>
+        </div>
+
+        <p class="auth-switch">
+          Already have an account?
+          <a routerLink="/login">Sign in</a>
+        </p>
+      </div>
+
+      <!-- STEP 2: Personal Info -->
+      <div *ngIf="step === 2" class="step-panel">
+        <div class="form-header">
+          <div class="back-btn" (click)="step = 1">← Back</div>
+          <h1>Your details</h1>
+          <p>Fill in your personal information.</p>
+        </div>
+
+        <form [formGroup]="form" novalidate>
+          <div class="field-group">
+            <label>Full Name</label>
+            <div class="input-wrap" [class.error]="f['fullName'].invalid && f['fullName'].touched">
+              <span class="input-icon"><mat-icon>person</mat-icon></span>
+              <input type="text" formControlName="fullName" placeholder="Jane Doe" />
+            </div>
+            <div class="field-error" *ngIf="f['fullName'].invalid && f['fullName'].touched">Full name is required.</div>
+          </div>
+
+          <div class="field-group">
+            <label>Email Address</label>
+            <div class="input-wrap" [class.error]="f['email'].invalid && f['email'].touched">
+              <span class="input-icon"><mat-icon>email</mat-icon></span>
+              <input type="email" formControlName="email" placeholder="you@example.com" />
+            </div>
+            <div class="field-error" *ngIf="f['email'].errors?.['required'] && f['email'].touched">Email is required.
+            </div>
+            <div class="field-error" *ngIf="f['email'].errors?.['email'] && f['email'].touched">Enter a valid email.
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>Phone Number</label>
+            <div class="input-wrap" [class.error]="f['phone'].invalid && f['phone'].touched">
+              <span class="input-icon"><mat-icon>phone</mat-icon></span>
+              <input type="tel" formControlName="phone" placeholder="5550000000" pattern="^[6-9][0-9]{9,14}$"
+                maxlength="10" />
+            </div>
+            <div class="field-error" *ngIf="f['phone'].invalid && f['phone'].touched">Enter a valid phone number.</div>
+          </div>
+
+          
+        </form>
+
+        <button type="button" class="btn-submit" (click)="nextStep()">
+          Continue <span class="arrow">→</span>
+        </button>
+      </div>
+
+      <!-- STEP 3: Password -->
+      <div *ngIf="step === 3" class="step-panel">
+        <div class="form-header">
+          <div class="back-btn" (click)="step = 2">← Back</div>
+          <h1>Secure your account</h1>
+          <p>Create a strong password to protect your account.</p>
+        </div>
+
+        <!-- Step 3 banners — error & success -->
+        <div class="error-banner" *ngIf="error">
+          <span class="banner-icon"><mat-icon>warning</mat-icon></span>
+          <span>{{ error }}</span>
+        </div>
+
+        <div class="success-banner" *ngIf="success">
+          <span class="banner-icon"><mat-icon>check_circle</mat-icon></span>
+          <div class="success-body">
+            <span>{{ success }}</span>
+            <div class="success-progress">
+              <div class="success-progress-bar"></div>
+            </div>
+          </div>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+          <div class="field-group">
+            <label>Password</label>
+            <div class="input-wrap" [class.error]="f['password'].invalid && f['password'].touched">
+              <span class="input-icon"><mat-icon>key</mat-icon></span>
+              <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
+                placeholder="Min. 8 characters" />
+              <button type="button" class="toggle-pw" (click)="showPassword = !showPassword">
+                <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+            </div>
+            <div class="field-error" *ngIf="f['password'].invalid && f['password'].touched">
+              Password must be at least 8 characters.
+            </div>
+
+            <!-- Password strength -->
+            <div class="pw-strength" *ngIf="f['password'].value">
+              <div class="pw-bars">
+                <div class="pw-bar" *ngFor="let i of [1,2,3,4]"
+                  [style.background]="i <= getPasswordStrength().level ? getPasswordStrength().color : 'rgba(255,255,255,0.08)'">
+                </div>
+              </div>
+              <span [style.color]="getPasswordStrength().color">{{ getPasswordStrength().label }}</span>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>Confirm Password</label>
+            <div class="input-wrap" [class.error]="f['confirmPassword'].touched && form.errors?.['passwordMismatch']">
+              <span class="input-icon"><mat-icon>lock</mat-icon></span>
+              <input type="password" formControlName="confirmPassword" placeholder="Re-enter password" />
+            </div>
+            <div class="field-error" *ngIf="f['confirmPassword'].touched && form.errors?.['passwordMismatch']">
+              Passwords do not match.
+            </div>
+          </div>
+
+          <!-- ── SECURITY SECTION ─────────────────────────────────── -->
+          <div class="security-section">
+
+
+            <div class="field-group">
+              <label>Security Question</label>
+
+              <!-- Custom Dropdown -->
+              <div class="custom-select" [class.error]="f['securityQuestion'].invalid && f['securityQuestion'].touched"
+                [class.open]="dropdownOpen" (clickOutside)="dropdownOpen = false">
+
+                <!-- Trigger Button -->
+                <div class="custom-select-trigger" (click)="dropdownOpen = !dropdownOpen">
+                  <span class="input-icon"><mat-icon>help_outline</mat-icon></span>
+                  <span class="select-value" [class.placeholder]="!f['securityQuestion'].value">
+                    {{ getSelectedLabel() || 'Choose a security question' }}
+                  </span>
+                  <span class="select-arrow" [class.rotated]="dropdownOpen"><mat-icon>expand_more</mat-icon></span>
+                </div>
+
+                <!-- Dropdown Panel -->
+                <div class="custom-select-panel" *ngIf="dropdownOpen">
+                  <div *ngFor="let group of securityQuestions">
+                    <div class="option-group-label">{{ group.group }}</div>
+                    <div class="option-item" *ngFor="let q of group.questions"
+                      [class.selected]="f['securityQuestion'].value === q.value" (click)="selectQuestion(q.value)">
+                      <span class="option-check" *ngIf="f['securityQuestion'].value === q.value">✓</span>
+                      {{ q.label }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Hidden native select keeps the FormControl in sync -->
+              <select formControlName="securityQuestion" style="display:none">
+                <option value="">Choose a security question</option>
+                <option *ngFor="let group of securityQuestions" [attr.disabled]="true">{{ group.group }}</option>
+                <ng-container *ngFor="let group of securityQuestions">
+                  <option *ngFor="let q of group.questions" [value]="q.value">{{ q.label }}</option>
+                </ng-container>
+              </select>
+
+              <div class="field-error" *ngIf="f['securityQuestion'].invalid && f['securityQuestion'].touched">
+                Please select a security question.
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label>Security Answer</label>
+              <div class="input-wrap" [class.error]="f['securityAnswer'].invalid && f['securityAnswer'].touched">
+                <span class="input-icon"><mat-icon>shield</mat-icon></span>
+                <input [type]="showAnswer ? 'text' : 'password'" formControlName="securityAnswer"
+                  placeholder="Your answer (case-insensitive)" autocomplete="off" />
+                <button type="button" class="toggle-pw" (click)="showAnswer = !showAnswer">
+                  <mat-icon>{{ showAnswer ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </div>
+              <div class="field-error" *ngIf="f['securityAnswer'].errors?.['required'] && f['securityAnswer'].touched">
+                Security answer is required.
+              </div>
+              <div class="field-error" *ngIf="f['securityAnswer'].errors?.['minlength'] && f['securityAnswer'].touched">
+                Answer must be at least 3 characters.
+              </div>
+            </div>
+          </div>
+          <!-- ── END SECURITY SECTION ─────────────────────────────── -->
+
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="agreeTerms" />
+            <span>I agree to RevPay's <a routerLink="/terms-conditions" target="_blank">Terms of Service</a> and  <a routerLink="/privacy-policy" target="_blank">Privacy Policy</a></span>
+          </label>
+          <div class="field-error" *ngIf="f['agreeTerms'].invalid && f['agreeTerms'].touched">
+            You must accept the terms to continue.
+          </div>
+
+          <button type="submit" class="btn-submit" [disabled]="loading">
+            <span *ngIf="!loading">Create Account <span class="arrow">→</span></span>
+            <span *ngIf="loading" class="spinner"></span>
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+</div>

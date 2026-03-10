@@ -1,0 +1,92 @@
+<div class="page-layout">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Notifications</h1>
+      <p class="page-sub">{{ unreadCount }} unread</p>
+    </div>
+    <div class="header-actions" *ngIf="activeTab === 'list'">
+      <button class="btn-outline" (click)="markAllRead()" [disabled]="markingAll || unreadCount === 0">
+        {{ markingAll ? 'Marking…' : 'Mark all read' }}
+      </button>
+    </div>
+    <div class="header-actions" *ngIf="activeTab === 'preferences'">
+      <button class="btn-primary" (click)="savePreferences()" [disabled]="prefsSaving">
+        {{ prefsSaving ? 'Saving…' : 'Save Preferences' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab" [class.active]="activeTab==='list'" (click)="activeTab='list'">
+      Notification History
+    </button>
+    <button class="tab" [class.active]="activeTab==='preferences'" (click)="activeTab='preferences'">
+      ⚙ Preferences
+    </button>
+  </div>
+
+  <!-- ── Notification List Tab ───────────────────────────────── -->
+  <div *ngIf="activeTab === 'list'">
+    <div class="loading-row" *ngIf="loading">
+      <div class="spinner"></div>
+    </div>
+
+    <div class="notif-list" *ngIf="!loading">
+      <div class="empty-state" *ngIf="notifications.length === 0">
+        <span class="empty-icon">🔔</span>
+        <p>No notifications yet.</p>
+      </div>
+
+      <div class="notif-item" *ngFor="let n of notifications" [class.unread]="!n.isRead" (click)="markRead(n)">
+        <div class="notif-icon-wrap"><mat-icon>{{ typeIcon(n.type) }}</mat-icon></div>
+        <div class="notif-content">
+          <p class="notif-message">{{ n.message }}</p>
+          <span class="notif-time">{{ n.createdAt | date:'dd MMM y, h:mm a' }}</span>
+        </div>
+        <div class="unread-dot" *ngIf="!n.isRead"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Preferences Tab ────────────────────────────────────── -->
+  <div *ngIf="activeTab === 'preferences'">
+    <div class="loading-row" *ngIf="prefsLoading">
+      <div class="spinner"></div>
+    </div>
+
+    <div class="prefs-panel" *ngIf="!prefsLoading">
+      <div class="alert success" *ngIf="prefsSuccess">{{ prefsSuccess }}</div>
+      <div class="alert error" *ngIf="prefsError">{{ prefsError }}</div>
+
+      <p class="prefs-desc">
+        Choose which events send you a notification.
+        Turning off a group disables all notification types within it.
+      </p>
+
+      <div class="pref-list">
+        <div class="pref-item" *ngFor="let group of prefGroups">
+          <div class="pref-icon">
+            <mat-icon>{{ group.icon }}</mat-icon>
+          </div>
+          <div class="pref-info">
+            <div class="pref-label">{{ group.label }}</div>
+            <div class="pref-desc">{{ group.description }}</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" [checked]="isGroupEnabled(group)"
+              (change)="toggleGroup(group, $any($event.target).checked)" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="prefs-footer">
+        <button class="btn-primary" (click)="savePreferences()" [disabled]="prefsSaving">
+          {{ prefsSaving ? 'Saving…' : 'Save Preferences' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

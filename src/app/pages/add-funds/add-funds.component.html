@@ -1,0 +1,105 @@
+<div class="page-layout centered">
+  <div class="send-card">
+
+    <!-- Loading -->
+    <div class="loading-row" *ngIf="loading"><div class="spinner"></div></div>
+
+    <!-- No cards state -->
+    <div class="no-cards" *ngIf="!loading && cards.length === 0">
+      <span class="empty-icon">💳</span>
+      <h2>No Cards Linked</h2>
+      <p>You need to add a payment card before you can top up your wallet.</p>
+      <button class="btn-primary" (click)="goToAddCard()">＋ Add a Card</button>
+      <button class="btn-ghost" (click)="goToDashboard()">← Back to Dashboard</button>
+    </div>
+
+    <!-- Form -->
+    <ng-container *ngIf="!loading && cards.length > 0 && step === 'form'">
+      <div class="send-header">
+        <button class="back-btn" (click)="goToDashboard()">← Back</button>
+        <h1>Add Funds</h1>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="alert error" *ngIf="error">{{ error }}</div>
+
+        <!-- Card selection -->
+        <div class="form-group">
+          <label>Select Card</label>
+          <div class="card-options">
+            <div class="card-option"
+              *ngFor="let card of cards"
+              [class.selected]="form.value.cardId == card.cardId"
+              (click)="form.patchValue({ cardId: card.cardId })">
+              <span class="card-option-icon">💳</span>
+              <div class="card-option-info">
+                <div class="card-option-name">{{ card.nickname }}</div>
+                <div class="card-option-number">•••• {{ card.lastFour }}</div>
+              </div>
+              <span class="card-option-default" *ngIf="card.isDefault">Default</span>
+            </div>
+          </div>
+          <span class="field-error" *ngIf="f('cardId')?.touched && f('cardId')?.invalid">
+            Please select a card
+          </span>
+        </div>
+
+        <!-- Quick amount buttons -->
+        <div class="form-group">
+          <label>Amount (₹)</label>
+          <div class="quick-amounts">
+            <button type="button" *ngFor="let a of quickAmounts"
+              [class.selected]="form.value.amount == a"
+              (click)="setAmount(a)">
+              ₹{{ a | number }}
+            </button>
+          </div>
+          <div class="amount-input-wrap" style="margin-top: 0.75rem;">
+            <span class="currency-prefix">₹</span>
+            <input type="number" formControlName="amount" placeholder="Or enter custom amount"/>
+          </div>
+          <span class="field-error" *ngIf="f('amount')?.touched && f('amount')?.invalid">
+            Minimum ₹1 required
+          </span>
+        </div>
+
+        <!-- PIN -->
+        <div class="form-group">
+          <label>Transaction PIN</label>
+          <div class="pin-input-wrap">
+            <input [type]="showPin ? 'text' : 'password'" formControlName="pin"
+              placeholder="••••" maxlength="6"/>
+            <button type="button" class="pin-toggle" (click)="showPin = !showPin">
+              {{ showPin ? '🙈' : '👁' }}
+            </button>
+          </div>
+          <span class="field-error" *ngIf="f('pin')?.touched && f('pin')?.invalid">
+            Enter your 4–6 digit transaction PIN
+          </span>
+        </div>
+
+        <button type="submit" class="btn-primary full" [disabled]="submitting">
+          {{ submitting ? 'Processing…' : 'Add ₹' + (form.value.amount || 0 | number:'1.2-2') + ' to Wallet' }}
+        </button>
+      </form>
+
+      <!-- No more cards needed link -->
+      <div class="footer-link">
+        <button class="action-link" (click)="goToAddCard()">Manage payment cards →</button>
+      </div>
+    </ng-container>
+
+    <!-- Success -->
+    <div class="success-screen" *ngIf="step === 'success'">
+      <div class="success-icon">✅</div>
+      <h2>Funds Added!</h2>
+      <p>Your wallet has been topped up successfully.</p>
+      <div class="success-amount">+₹{{ addedAmount | number:'1.2-2' }}</div>
+      <div class="success-actions">
+        <button class="btn-outline" (click)="addMore()">Add More</button>
+        <button class="btn-primary" (click)="goToDashboard()">Go to Dashboard</button>
+      </div>
+    </div>
+
+  </div>
+</div>

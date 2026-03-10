@@ -1,0 +1,191 @@
+<div class="page-layout">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Business Loans</h1>
+      <p class="page-sub">Apply for and manage your loans</p>
+    </div>
+    <button class="btn-primary" (click)="openApply()">＋ Apply for Loan</button>
+  </div>
+
+  <div class="alert success" *ngIf="successMsg">{{ successMsg }}</div>
+  <div class="alert error"   *ngIf="error">{{ error }}</div>
+
+  <div class="loading-row" *ngIf="loading"><div class="spinner"></div></div>
+
+  <div *ngIf="!loading">
+    <div class="empty-state" *ngIf="loans.length === 0">
+      <span class="empty-icon">🏦</span>
+      <p>No loan applications yet.</p>
+      <button class="btn-primary" (click)="openApply()">Apply for your first loan</button>
+    </div>
+
+    <div class="loan-list">
+      <div class="loan-card" *ngFor="let loan of loans">
+        <div class="loan-card-top">
+          <div class="loan-info">
+            <div class="loan-purpose">{{ loan.purpose }}</div>
+            <div class="loan-amount">₹{{ loan.loanAmount | number:'1.2-2' }}</div>
+            <div class="loan-meta">{{ loan.tenureMonths }} months · {{ loan.interestRate }}% p.a.</div>
+          </div>
+          <div class="loan-right">
+            <span class="status-pill" [class]="statusColor(loan.status)">{{ loan.status }}</span>
+          </div>
+        </div>
+
+        <!-- Progress bar for active loans -->
+        <div class="repay-progress" *ngIf="loan.status === 'ACTIVE'">
+          <div class="progress-labels">
+            <span>Repaid ₹{{ loan.amountRepaid | number:'1.2-2' }}</span>
+            <span>Outstanding ₹{{ loan.outstandingBalance | number:'1.2-2' }}</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="progressPercent(loan)"></div>
+          </div>
+          <div class="progress-pct">{{ progressPercent(loan) }}% complete</div>
+          <div class="next-due" *ngIf="loan.nextDueDate">
+            Next EMI: ₹{{ loan.monthlyEmi | number:'1.2-2' }} due {{ loan.nextDueDate | date:'dd MMM y' }}
+          </div>
+        </div>
+
+        <div class="rejection-note" *ngIf="loan.status === 'REJECTED' && loan.rejectionReason">
+          Reason: {{ loan.rejectionReason }}
+        </div>
+
+        <div class="loan-actions">
+          <button class="action-link" (click)="openDetail(loan)">View Details</button>
+          <button class="btn-primary sm" *ngIf="loan.status === 'ACTIVE'" (click)="openRepay(loan)">
+            Make Repayment
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Apply Modal -->
+  <div class="modal-backdrop" *ngIf="showApplyModal" (click)="closeApply()">
+    <div class="modal wide" (click)="$event.stopPropagation()">
+      <div class="modal-head"><h3>Apply for Business Loan</h3><button class="close-btn" (click)="closeApply()">✕</button></div>
+      <form [formGroup]="applyForm" (ngSubmit)="submitApply()" class="modal-body scrollable">
+        <div class="alert error" *ngIf="error">{{ error }}</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Loan Amount (₹)</label>
+            <input type="number" formControlName="loanAmount" placeholder="Minimum ₹10,000"/>
+            <span class="field-error" *ngIf="af('loanAmount')?.touched && af('loanAmount')?.invalid">Minimum ₹10,000</span>
+          </div>
+          <div class="form-group">
+            <label>Purpose</label>
+            <select formControlName="purpose">
+              <option value="">Select purpose</option>
+              <option *ngFor="let p of purposeOptions" [value]="p">{{ p }}</option>
+            </select>
+            <span class="field-error" *ngIf="af('purpose')?.touched && af('purpose')?.invalid">Required</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Repayment Tenure</label>
+          <div class="tenure-options">
+            <button type="button" *ngFor="let t of tenureOptions"
+              [class.selected]="applyForm.value.tenureMonths === t"
+              (click)="applyForm.patchValue({ tenureMonths: t })">
+              {{ t }}mo
+            </button>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Annual Revenue (₹)</label>
+            <input type="number" formControlName="annualRevenue"/>
+            <span class="field-error" *ngIf="af('annualRevenue')?.touched && af('annualRevenue')?.invalid">Required</span>
+          </div>
+          <div class="form-group">
+            <label>Years in Business</label>
+            <input type="number" formControlName="yearsInBusiness" min="0"/>
+            <span class="field-error" *ngIf="af('yearsInBusiness')?.touched && af('yearsInBusiness')?.invalid">Required</span>
+          </div>
+          <div class="form-group">
+            <label>Employee Count</label>
+            <input type="number" formControlName="employeeCount" min="1"/>
+            <span class="field-error" *ngIf="af('employeeCount')?.touched && af('employeeCount')?.invalid">Required</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Collateral <span class="optional">(optional)</span></label>
+          <input type="text" formControlName="collateral" placeholder="Property, equipment, etc."/>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" (click)="closeApply()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="submitting">
+            {{ submitting ? 'Submitting…' : 'Submit Application' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loan Detail Modal -->
+  <div class="modal-backdrop" *ngIf="showDetailModal && selectedLoan" (click)="closeDetail()">
+    <div class="modal wide" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <h3>Loan Details</h3>
+        <button class="close-btn" (click)="closeDetail()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="loan-detail-grid">
+          <div class="ld-item"><span class="dl">Amount</span><span class="dv">₹{{ selectedLoan.loanAmount | number:'1.2-2' }}</span></div>
+          <div class="ld-item"><span class="dl">Interest Rate</span><span class="dv">{{ selectedLoan.interestRate }}% p.a.</span></div>
+          <div class="ld-item"><span class="dl">Tenure</span><span class="dv">{{ selectedLoan.tenureMonths }} months</span></div>
+          <div class="ld-item"><span class="dl">Monthly EMI</span><span class="dv">₹{{ selectedLoan.monthlyEmi | number:'1.2-2' }}</span></div>
+          <div class="ld-item"><span class="dl">Total Interest</span><span class="dv">₹{{ selectedLoan.totalInterest | number:'1.2-2' }}</span></div>
+          <div class="ld-item"><span class="dl">Total Repayable</span><span class="dv">₹{{ selectedLoan.totalRepayable | number:'1.2-2' }}</span></div>
+          <div class="ld-item"><span class="dl">Repaid</span><span class="dv">₹{{ selectedLoan.amountRepaid | number:'1.2-2' }}</span></div>
+          <div class="ld-item"><span class="dl">Outstanding</span><span class="dv">₹{{ selectedLoan.outstandingBalance | number:'1.2-2' }}</span></div>
+        </div>
+
+        <div class="schedule-section" *ngIf="schedule.length > 0">
+          <h4>Repayment Schedule</h4>
+          <div class="loading-row" *ngIf="scheduleLoading"><div class="spinner sm"></div></div>
+          <table class="mini-table">
+            <thead><tr><th>#</th><th>Due Date</th><th>EMI</th><th>Principal</th><th>Interest</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let s of schedule">
+                <td>{{ s.installmentNo }}</td>
+                <td>{{ s.dueDate | date:'dd MMM y' }}</td>
+                <td>₹{{ s.emiAmount | number:'1.2-2' }}</td>
+                <td>₹{{ s.principal | number:'1.2-2' }}</td>
+                <td>₹{{ s.interest | number:'1.2-2' }}</td>
+                <td><span class="status-pill" [class]="s.status.toLowerCase()">{{ s.status }}</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Repay Modal -->
+  <div class="modal-backdrop" *ngIf="showRepayModal" (click)="closeRepay()">
+    <div class="modal sm" (click)="$event.stopPropagation()">
+      <div class="modal-head"><h3>Make Repayment</h3><button class="close-btn" (click)="closeRepay()">✕</button></div>
+      <form [formGroup]="repayForm" (ngSubmit)="submitRepay()" class="modal-body">
+        <div class="alert error" *ngIf="error">{{ error }}</div>
+        <div class="form-group">
+          <label>Amount (₹)</label>
+          <input type="number" formControlName="amount" min="1"/>
+          <span class="field-error" *ngIf="rf('amount')?.touched && rf('amount')?.invalid">Required</span>
+        </div>
+        <div class="form-group">
+          <label>Transaction PIN</label>
+          <input type="password" formControlName="pin" maxlength="6" placeholder="••••"/>
+          <span class="field-error" *ngIf="rf('pin')?.touched && rf('pin')?.invalid">4–6 digit PIN</span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" (click)="closeRepay()">Cancel</button>
+          <button type="submit" class="btn-primary" [disabled]="submitting">
+            {{ submitting ? 'Processing…' : 'Confirm Repayment' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

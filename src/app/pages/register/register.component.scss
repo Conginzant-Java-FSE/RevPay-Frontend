@@ -1,0 +1,750 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+$accent: #4f8ef7;
+$accent2: #7c3aed;
+$text: #e8eaf0;
+$muted: #6b7280;
+$surface: #0d1117;
+$border: rgba(255,255,255,0.07);
+$error: #ef4444;
+$success: #22c55e;
+
+:host {
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+  background: #050810;
+  min-height: 100vh;
+}
+
+.auth-layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  min-height: 100vh;
+
+  @media (max-width: 768px) { grid-template-columns: 1fr; }
+}
+
+// ─── LEFT PANEL ───────────────────────────────────────────────
+.auth-left {
+  background: linear-gradient(180deg, #0d1b36 0%, #06090f 100%);
+  border-right: 1px solid $border;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+
+  @media (max-width: 768px) { display: none; }
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: $text;
+}
+
+.logo-mark {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, $accent, $accent2);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.logo-text {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.03em;
+}
+
+.auth-left-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+}
+
+.orb-a {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba($accent, 0.15), transparent 70%);
+  top: 10%;
+  right: -40px;
+}
+
+.orb-b {
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba($accent2, 0.12), transparent 70%);
+  bottom: 20%;
+  left: 10px;
+}
+
+// ─── STEPS LIST ───────────────────────────────────────────────
+.steps-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  opacity: 0.4;
+  transition: opacity 0.3s;
+
+  &.active { opacity: 1; }
+  &.done { opacity: 0.7; }
+}
+
+.step-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid $border;
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  color: $muted;
+  transition: all 0.3s;
+
+  .step-item.active & {
+    border-color: $accent;
+    color: $accent;
+    background: rgba($accent, 0.1);
+  }
+
+  .step-item.done & {
+    border-color: $success;
+    color: $success;
+    background: rgba($success, 0.1);
+  }
+}
+
+.step-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $text;
+}
+
+.step-desc {
+  font-size: 0.78rem;
+  color: $muted;
+  margin-top: 0.1rem;
+}
+
+.step-connector {
+  width: 2px;
+  height: 32px;
+  background: $border;
+  margin: 4px 0 4px 15px;
+  transition: background 0.3s;
+
+  &.done { background: rgba($success, 0.4); }
+}
+
+.left-footer {
+  font-size: 0.82rem;
+  color: $muted;
+  padding-bottom: 1rem;
+
+  a {
+    color: $accent;
+    text-decoration: none;
+    margin-left: 0.25rem;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+// ─── RIGHT PANEL ──────────────────────────────────────────────
+.auth-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: #050810;
+}
+
+.form-wrap {
+  width: 100%;
+  max-width: 480px;
+}
+
+.step-panel {
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.form-header {
+  margin-bottom: 2rem;
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.04em;
+    margin: 0 0 0.4rem;
+  }
+
+  p {
+    font-size: 0.88rem;
+    color: $muted;
+    margin: 0;
+  }
+}
+
+.back-btn {
+  font-size: 0.82rem;
+  color: $muted;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  display: inline-block;
+  transition: color 0.2s;
+  &:hover { color: $text; }
+}
+
+// ─── ACCOUNT TYPE CARDS ───────────────────────────────────────
+.account-type-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  @media (max-width: 480px) { grid-template-columns: 1fr; }
+}
+
+.type-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid $border;
+  border-radius: 14px;
+  padding: 1.5rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    border-color: rgba($accent, 0.4);
+    background: rgba($accent, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+  }
+}
+
+.type-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+
+.type-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.35rem;
+}
+
+.type-desc {
+  font-size: 0.8rem;
+  color: $muted;
+  line-height: 1.5;
+}
+
+.type-arrow {
+  position: absolute;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: $muted;
+  font-size: 1.1rem;
+  transition: all 0.2s;
+  .type-card:hover & { color: $accent; transform: translate(4px, -50%); }
+}
+
+// ─── FORM FIELDS ──────────────────────────────────────────────
+.field-group {
+  margin-bottom: 1.1rem;
+
+  label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 0.4rem;
+  }
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+
+  @media (max-width: 480px) { grid-template-columns: 1fr; }
+}
+
+.input-wrap {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid $border;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus-within {
+    border-color: rgba($accent, 0.5);
+    box-shadow: 0 0 0 3px rgba($accent, 0.08);
+  }
+
+  &.error { border-color: rgba($error, 0.5); }
+
+  .input-icon {
+    padding: 0 0.75rem;
+    font-size: 0.9rem;
+    color: $muted;
+    user-select: none;
+  }
+
+  input, select {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: $text;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    padding: 0.8rem 0;
+
+    &::placeholder { color: darken($muted, 5%); }
+
+    option { background: #0d1117; color: $text; }
+  }
+
+  .toggle-pw {
+    background: none;
+    border: none;
+    padding: 0 0.75rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: $muted;
+    &:hover { color: $text; }
+  }
+}
+
+.field-error {
+  font-size: 0.75rem;
+  color: $error;
+  margin-top: 0.3rem;
+}
+
+// ─── PASSWORD STRENGTH ────────────────────────────────────────
+.pw-strength {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.pw-bars {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.pw-bar {
+  height: 4px;
+  border-radius: 2px;
+  flex: 1;
+  transition: background 0.3s;
+}
+
+.pw-strength span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-width: 44px;
+}
+
+// ─── CHECKBOX ─────────────────────────────────────────────────
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 1rem 0 0.5rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: $muted;
+  line-height: 1.5;
+
+  input[type="checkbox"] {
+    margin-top: 2px;
+    flex-shrink: 0;
+    accent-color: $accent;
+    width: 14px;
+    height: 14px;
+  }
+
+  a {
+    color: $accent;
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+// ─── BUTTONS ──────────────────────────────────────────────────
+
+.btn-submit {
+  width: 100%;
+  padding: 0.9rem;
+  background: linear-gradient(135deg, $accent, darken($accent, 10%));
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  .arrow { transition: transform 0.2s; }
+  &:hover:not(:disabled) {
+    box-shadow: 0 8px 24px rgba($accent, 0.35);
+    transform: translateY(-1px);
+    .arrow { transform: translateX(4px); }
+  }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.auth-switch {
+  text-align: center;
+  font-size: 0.88rem;
+  color: $muted;
+  margin: 1.5rem 0 0;
+
+  a {
+    color: $accent;
+    text-decoration: none;
+    font-weight: 500;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+// ─── CUSTOM SELECT ────────────────────────────────────────────
+.custom-select {
+  position: relative;
+
+  &.error .custom-select-trigger {
+    border-color: rgba(#ef4444, 0.5);
+  }
+
+  &.open .custom-select-trigger {
+    border-color: rgba(#4f8ef7, 0.5);
+    box-shadow: 0 0 0 3px rgba(#4f8ef7, 0.08);
+  }
+}
+
+.custom-select-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 0.8rem 0.75rem;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  user-select: none;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .input-icon {
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+}
+
+.select-value {
+  flex: 1;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  color: #e8eaf0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &.placeholder {
+    color: #4b5563; // muted placeholder color
+  }
+}
+
+.select-arrow {
+  font-size: 0.85rem;
+  color: #6b7280;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+
+  &.rotated {
+    transform: rotate(180deg);
+  }
+}
+
+.custom-select-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #0d1117;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  z-index: 50;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  max-height: 280px;
+  overflow-y: auto;
+  animation: dropdownIn 0.15s ease;
+
+  // Scrollbar
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+  }
+}
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.option-group-label {
+  padding: 0.6rem 1rem 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #4f8ef7;            // accent color — clearly readable
+  background: rgba(79, 142, 247, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  pointer-events: none;      // not clickable
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1rem;
+  font-size: 0.85rem;
+  color: #c9cdd6;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+
+  &:last-child { border-bottom: none; }
+
+  &:hover {
+    background: rgba(79, 142, 247, 0.08);
+    color: #e8eaf0;
+  }
+
+  &.selected {
+    background: rgba(79, 142, 247, 0.12);
+    color: #4f8ef7;
+    font-weight: 500;
+  }
+}
+
+.option-check {
+  font-size: 0.75rem;
+  color: #4f8ef7;
+  width: 14px;
+  flex-shrink: 0;
+}
+
+// ─── BANNERS ──────────────────────────────────────────────────
+.error-banner,
+.success-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  animation: bannerIn 0.3s ease;
+}
+
+.error-banner {
+  background: rgba(#ef4444, 0.1);
+  border: 1px solid rgba(#ef4444, 0.25);
+  color: lighten(#ef4444, 15%);
+}
+
+.success-banner {
+  background: rgba(#22c55e, 0.1);
+  border: 1px solid rgba(#22c55e, 0.25);
+  color: lighten(#22c55e, 10%);
+}
+
+.banner-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.success-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+// Progress bar that drains over 3 seconds — matches the setTimeout duration
+.success-progress {
+  height: 3px;
+  background: rgba(#22c55e, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.success-progress-bar {
+  height: 100%;
+  width: 100%;
+  background: #22c55e;
+  border-radius: 2px;
+  animation: progressDrain 3s linear forwards; // 👈 matches the 3000ms timeout exactly
+}
+
+@keyframes progressDrain {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
+@keyframes bannerIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Icon container */
+.type-icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Icon */
+.type-icon mat-icon {
+  font-size: 32px;
+  color: #2563eb; /* fintech blue */
+}
+
+
+
+
+.input-icon mat-icon {
+  font-size: 20px;
+  color: #94a3b8; /* muted */
+  transition: all 0.25s ease;
+}
+
+/* On focus */
+.input-wrap:focus-within .input-icon mat-icon {
+  color: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* Error state */
+.input-wrap.error .input-icon mat-icon {
+  color: #dc2626;
+}
+
+.toggle-pw mat-icon {
+  font-size: 20px;
+  color: #94a3b8;
+  transition: all 0.25s ease;
+}
+
+.toggle-pw:hover mat-icon {
+  color: #2563eb;
+  transform: scale(1.05);
+}
+
+.toggle-pw:active mat-icon {
+  transform: scale(0.95);
+}
+
+.banner-icon mat-icon {
+  font-size: 22px;
+}
+
+/* Error banner */
+.error-banner .banner-icon mat-icon {
+  color: #dc2626;
+}
+
+/* Success banner */
+.success-banner .banner-icon mat-icon {
+  color: #16a34a;
+}
+
+.custom-select .input-icon mat-icon {
+  font-size: 20px;
+  color: #94a3b8;
+}
+
+.select-arrow mat-icon {
+  font-size: 22px;
+  color: #94a3b8;
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.select-arrow.rotated mat-icon {
+  transform: rotate(180deg);
+  color: #2563eb;
+}
+
+.input-wrap:focus-within .input-icon mat-icon {
+  text-shadow: 0 0 8px rgba(37, 99, 235, 0.4);
+}

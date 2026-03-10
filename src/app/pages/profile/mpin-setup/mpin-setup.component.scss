@@ -1,0 +1,335 @@
+// Matches the existing personal/business setup design system exactly
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+// ── Tokens (same as personal/business setup) ──────────────────
+$bg:         #0a0f1e;
+$surface:    #0d1421;
+$surface-2:  #111827;
+$accent:     #7ca4d4;
+$accent-2:   #5b8fc4;
+$green:      #34d399;
+$red:        #f87171;
+$text:       #e2e8f0;
+$muted:      #4a5568;
+$muted-2:    #64748b;
+$border:     rgba(124, 164, 212, 0.12);
+$border-2:   rgba(255, 255, 255, 0.06);
+
+:host { display: block; }
+
+// ── Page layout ───────────────────────────────────────────────
+.setup-page {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  min-height: 100vh;
+  background: $bg;
+  font-family: 'DM Sans', sans-serif;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Left panel ────────────────────────────────────────────────
+.setup-left {
+  background: linear-gradient(160deg, #0d1a2e 0%, #0a0f1e 100%);
+  border-right: 1px solid $border;
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+
+  @media (max-width: 900px) {
+    height: auto;
+    position: static;
+    padding: 2rem 1.5rem 1.5rem;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, $accent, $accent-2);
+  border-radius: 10px;
+  display: grid; place-items: center;
+  font-size: 1rem; font-weight: 700; color: #fff;
+}
+
+.brand-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800; font-size: 1.2rem;
+  color: #fff; letter-spacing: -0.02em;
+}
+
+.left-content {
+  flex: 1;
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.85rem; font-weight: 800;
+    color: #fff; line-height: 1.2;
+    letter-spacing: -0.03em; margin: 0 0 0.75rem;
+  }
+
+  .highlight {
+    background: linear-gradient(135deg, $accent, #a5c8f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  > p {
+    font-size: 0.88rem; color: $muted-2;
+    line-height: 1.7; margin: 0 0 2rem;
+  }
+}
+
+// Steps nav
+.steps-nav {
+  display: flex; flex-direction: column; gap: 0;
+}
+
+.step-item {
+  display: flex; align-items: center; gap: 0.85rem;
+  padding: 0.6rem 0;
+
+  &.active .step-dot {
+    background: rgba($accent, 0.15);
+    border-color: $accent; color: $accent;
+    box-shadow: 0 0 0 4px rgba($accent, 0.12);
+  }
+  &.done .step-dot {
+    background: rgba($green, 0.12);
+    border-color: $green; color: $green;
+  }
+}
+
+.step-dot {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid $border;
+  background: rgba(255,255,255,0.03);
+  display: grid; place-items: center;
+  font-size: 0.8rem; font-weight: 700; color: $muted;
+  transition: all 0.3s;
+
+  svg { width: 14px; height: 14px; }
+}
+
+.step-label {
+  strong { display: block; font-size: 0.88rem; font-weight: 600; color: $text; }
+  small  { display: block; font-size: 0.75rem; color: $muted-2; margin-top: 1px; }
+}
+
+.step-connector {
+  width: 2px; height: 24px; margin-left: 15px;
+  background: $border-2; border-radius: 1px; transition: background 0.3s;
+  &.done { background: rgba($green, 0.3); }
+}
+
+// Security tips
+.security-tips {
+  margin-top: 2rem;
+  display: flex; flex-direction: column; gap: 0.65rem;
+}
+
+.tip {
+  display: flex; align-items: center; gap: 0.65rem;
+  font-size: 0.8rem; color: $muted-2;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid $border-2; border-radius: 10px;
+
+  .tip-icon { font-size: 1rem; flex-shrink: 0; }
+}
+
+// ── Right panel ───────────────────────────────────────────────
+.setup-right {
+  display: flex; align-items: center; justify-content: center;
+  padding: 3rem 2rem;
+  background: $bg;
+
+  @media (max-width: 900px) { padding: 2rem 1.5rem; }
+}
+
+.form-card {
+  width: 100%; max-width: 480px;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 20px 48px rgba(0,0,0,0.35);
+}
+
+.form-header {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem; font-weight: 700;
+    color: #fff; letter-spacing: -0.02em; margin: 0;
+  }
+}
+
+.step-tag {
+  font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: $accent;
+  background: rgba($accent, 0.1);
+  border: 1px solid rgba($accent, 0.2);
+  border-radius: 100px; padding: 0.25rem 0.75rem;
+}
+
+// ── Form fields ───────────────────────────────────────────────
+.step-fields { display: flex; flex-direction: column; gap: 1.1rem; }
+
+.field {
+  display: flex; flex-direction: column; gap: 0.4rem;
+
+  label {
+    font-size: 0.8rem; font-weight: 600;
+    color: rgba(255,255,255,0.65); letter-spacing: 0.02em;
+  }
+}
+
+.pin-input-wrap {
+  position: relative;
+
+  input {
+    width: 100%; box-sizing: border-box;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid $border;
+    border-radius: 10px;
+    padding: 0.72rem 2.8rem 0.72rem 1rem;
+    font-size: 1.1rem; // slightly bigger for PIN digits
+    font-family: 'DM Sans', sans-serif;
+    color: $text; outline: none;
+    letter-spacing: 0.2em;
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    &::placeholder { letter-spacing: normal; font-size: 0.88rem; color: $muted; }
+    &:focus {
+      border-color: rgba($accent, 0.5);
+      box-shadow: 0 0 0 3px rgba($accent, 0.1);
+    }
+    &.error { border-color: rgba($red, 0.5); }
+  }
+}
+
+.pin-eye {
+  position: absolute; right: 0.75rem; top: 50%;
+  transform: translateY(-50%);
+  background: none; border: none; cursor: pointer;
+  color: $muted; padding: 0; line-height: 1;
+  display: grid; place-items: center;
+  transition: color 0.2s;
+
+  svg { width: 18px; height: 18px; }
+  &:hover { color: $accent; }
+}
+
+.req  { color: $red; margin-left: 2px; }
+
+.err-msg {
+  font-size: 0.75rem; color: $red; margin-top: 1px;
+}
+
+// ── PIN rules ─────────────────────────────────────────────────
+.pin-rules {
+  display: flex; gap: 1.25rem; flex-wrap: wrap;
+  padding: 0.75rem 0.9rem;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid $border-2; border-radius: 10px;
+}
+
+.rule {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.75rem; color: $muted; transition: color 0.2s;
+
+  &.met { color: $green; }
+  &.met .rule-dot { background: $green; }
+}
+
+.rule-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: $muted; flex-shrink: 0; transition: background 0.2s;
+}
+
+// ── Error banner ──────────────────────────────────────────────
+.error-banner {
+  display: flex; align-items: center; gap: 0.6rem;
+  background: rgba($red, 0.08);
+  border: 1px solid rgba($red, 0.2);
+  border-radius: 10px; padding: 0.75rem 1rem;
+  font-size: 0.83rem; color: #fca5a5;
+
+  svg { width: 16px; height: 16px; flex-shrink: 0; color: $red; }
+}
+
+// ── Buttons ───────────────────────────────────────────────────
+.btn-primary {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.5rem; width: 100%;
+  background: linear-gradient(135deg, $accent, $accent-2);
+  color: #fff; border: none; border-radius: 10px;
+  padding: 0.78rem 1.25rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; min-height: 46px;
+
+  &:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba($accent, 0.35);
+    transform: translateY(-1px);
+  }
+  &:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+}
+
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin 0.6s linear infinite; flex-shrink: 0;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ── Success screen ────────────────────────────────────────────
+.success-screen {
+  text-align: center; padding: 1.5rem 0;
+
+  .success-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.35rem; font-weight: 800;
+    color: #fff; margin: 0 0 0.5rem;
+  }
+
+  p { font-size: 0.88rem; color: $muted-2; margin: 0 0 1.75rem; line-height: 1.6; }
+}
+
+.progress-bar {
+  height: 4px; background: rgba(255,255,255,0.07);
+  border-radius: 100px; overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%; width: 0;
+  background: linear-gradient(90deg, $accent, $green);
+  border-radius: 100px;
+  animation: fillBar 2s ease forwards;
+}
+
+@keyframes fillBar { to { width: 100%; } }

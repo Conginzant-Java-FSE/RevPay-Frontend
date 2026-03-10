@@ -1,0 +1,117 @@
+<div class="page-layout">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Settings</h1>
+      <p class="page-sub">Manage your account preferences</p>
+    </div>
+  </div>
+
+  <div class="alert success" *ngIf="successMsg">{{ successMsg }}</div>
+  <div class="alert error"   *ngIf="error">{{ error }}</div>
+
+  <div class="loading-row" *ngIf="loading"><div class="spinner"></div></div>
+
+  <div class="settings-layout" *ngIf="!loading">
+    <!-- Sidebar tabs -->
+    <div class="settings-nav">
+      <button class="settings-tab" [class.active]="activeTab==='profile'"  (click)="activeTab='profile'; error=''; successMsg=''"><mat-icon>person</mat-icon> Profile</button>
+      <button class="settings-tab" [class.active]="activeTab==='password'" (click)="activeTab='password'; error=''; successMsg=''"><mat-icon>password</mat-icon> Password</button>
+      <button class="settings-tab" [class.active]="activeTab==='pin'"      (click)="activeTab='pin'; error=''; successMsg=''"><mat-icon>pin</mat-icon> PIN</button>
+    </div>
+
+    <!-- Profile Tab -->
+    <div class="settings-content" *ngIf="activeTab === 'profile'">
+      <h2 class="section-title">Profile Information</h2>
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" formControlName="fullName"/>
+            <span class="field-error" *ngIf="pf('fullName')?.touched && pf('fullName')?.invalid">Required</span>
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="text" formControlName="phone"/>
+            <span class="field-error" *ngIf="pf('phone')?.touched && pf('phone')?.invalid">Required</span>
+          </div>
+        </div>
+        <div class="form-group" *ngIf="isPersonal()">
+          <label>Date of Birth</label>
+          <input type="date" formControlName="dob"/>
+        </div>
+        <div class="form-group">
+          <label>{{ isBusiness() ? 'Business Address' : 'Address' }}</label>
+          <textarea formControlName="address" rows="2"></textarea>
+        </div>
+        <ng-container *ngIf="isBusiness()">
+          <div class="section-divider">Business Details</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Business Name</label>
+              <input type="text" formControlName="businessName"/>
+            </div>
+            <div class="form-group">
+              <label>Contact Phone</label>
+              <input type="text" formControlName="contactPhone"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Website</label>
+            <input type="url" formControlName="website" placeholder="https://"/>
+          </div>
+        </ng-container>
+        <button type="submit" class="btn-primary" [disabled]="saving">
+          {{ saving ? 'Saving…' : 'Save Changes' }}
+        </button>
+      </form>
+    </div>
+
+    <!-- Password Tab -->
+    <div class="settings-content" *ngIf="activeTab === 'password'">
+      <h2 class="section-title">Change Password</h2>
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+        <div class="form-group">
+          <label>Current Password</label>
+          <input type="password" formControlName="currentPassword"/>
+          <span class="field-error" *ngIf="pwf('currentPassword')?.touched && pwf('currentPassword')?.invalid">Required</span>
+        </div>
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" formControlName="newPassword"/>
+          <span class="field-error" *ngIf="pwf('newPassword')?.touched && pwf('newPassword')?.invalid">Minimum 8 characters</span>
+        </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input type="password" formControlName="confirmPassword"/>
+        </div>
+        <button type="submit" class="btn-primary" [disabled]="saving">
+          {{ saving ? 'Updating…' : 'Update Password' }}
+        </button>
+      </form>
+    </div>
+
+    <!-- PIN Tab -->
+    <div class="settings-content" *ngIf="activeTab === 'pin'">
+      <h2 class="section-title">Transaction PIN</h2>
+      <p class="section-desc">Your PIN is required to confirm money transfers and loan repayments.</p>
+      <form [formGroup]="pinForm" (ngSubmit)="changePin()">
+        <div class="form-group">
+          <label>Current PIN <span class="optional">(leave blank if not set)</span></label>
+          <input type="password" formControlName="currentPin" placeholder="••••" maxlength="6"/>
+        </div>
+        <div class="form-group">
+          <label>New PIN (4–6 digits)</label>
+          <input type="password" formControlName="newPin" placeholder="••••" maxlength="6"/>
+          <span class="field-error" *ngIf="pinf('newPin')?.touched && pinf('newPin')?.invalid">4–6 digits required</span>
+        </div>
+        <div class="form-group">
+          <label>Confirm New PIN</label>
+          <input type="password" formControlName="confirmPin" placeholder="••••" maxlength="6"/>
+        </div>
+        <button type="submit" class="btn-primary" [disabled]="saving">
+          {{ saving ? 'Saving…' : 'Set PIN' }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,114 @@
+<div class="page-layout">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Business Analytics</h1>
+      <p class="page-sub">Revenue, trends, and customer insights</p>
+    </div>
+  </div>
+
+  <div class="loading-row" *ngIf="loading"><div class="spinner"></div></div>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- Summary KPIs -->
+    <div class="kpi-grid" *ngIf="summary">
+      <div class="kpi-card received">
+        <div class="kpi-label">Total Received</div>
+        <div class="kpi-value">₹{{ summary.totalReceived | number:'1.2-2' }}</div>
+      </div>
+      <div class="kpi-card sent">
+        <div class="kpi-label">Total Sent</div>
+        <div class="kpi-value">₹{{ summary.totalSent | number:'1.2-2' }}</div>
+      </div>
+      <div class="kpi-card pending">
+        <div class="kpi-label">Pending Incoming</div>
+        <div class="kpi-value">₹{{ summary.pendingIncoming | number:'1.2-2' }}</div>
+      </div>
+      <div class="kpi-card flow">
+        <div class="kpi-label">Net Flow</div>
+        <div class="kpi-value" [class.pos]="summary.netFlow > 0" [class.neg]="summary.netFlow < 0">
+          {{ summary.netFlow > 0 ? '+' : '' }}₹{{ summary.netFlow | number:'1.2-2' }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Invoice summary -->
+    <div class="section-row" *ngIf="invoiceSummary">
+      <div class="analytics-card half">
+        <div class="card-head">Invoice Summary</div>
+        <div class="inv-kpis">
+          <div class="inv-kpi">
+            <span class="inv-kpi-dot paid"></span>
+            <span class="inv-kpi-label">Paid</span>
+            <span class="inv-kpi-val">₹{{ invoiceSummary.totalPaid | number:'1.2-2' }}</span>
+          </div>
+          <div class="inv-kpi">
+            <span class="inv-kpi-dot unpaid"></span>
+            <span class="inv-kpi-label">Unpaid</span>
+            <span class="inv-kpi-val">₹{{ invoiceSummary.totalUnpaid | number:'1.2-2' }}</span>
+          </div>
+          <div class="inv-kpi">
+            <span class="inv-kpi-dot overdue"></span>
+            <span class="inv-kpi-label">Overdue</span>
+            <span class="inv-kpi-val">₹{{ invoiceSummary.totalOverdue | number:'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Customers -->
+      <div class="analytics-card half">
+        <div class="card-head">Top Customers</div>
+        <div class="customer-list">
+          <div class="customer-row" *ngFor="let c of topCustomers">
+            <span class="cust-rank">#{{ c.rank }}</span>
+            <div class="cust-info">
+              <span class="cust-name">{{ c.customer.name }}</span>
+              <span class="cust-email">{{ c.customer.email }}</span>
+            </div>
+            <div class="cust-vol">₹{{ c.totalVolume | number:'1.2-2' }}</div>
+            <div class="cust-count">{{ c.transactionCount }} txns</div>
+          </div>
+          <div class="empty-state sm" *ngIf="topCustomers.length === 0">No data yet.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue chart (CSS bar chart) -->
+    <div class="analytics-card full">
+      <div class="card-head">
+        Revenue
+        <div class="period-toggle">
+          <button [class.active]="revenuePeriod==='DAILY'"   (click)="changePeriod('DAILY')">Daily</button>
+          <button [class.active]="revenuePeriod==='WEEKLY'"  (click)="changePeriod('WEEKLY')">Weekly</button>
+          <button [class.active]="revenuePeriod==='MONTHLY'" (click)="changePeriod('MONTHLY')">Monthly</button>
+        </div>
+      </div>
+      <div class="bar-chart" *ngIf="revenue.length > 0">
+        <div class="bar-col" *ngFor="let r of revenue">
+          <div class="bar-fill" [style.height.%]="barHeight(r)" [title]="'₹' + r.revenue"></div>
+          <div class="bar-label">{{ r.period }}</div>
+        </div>
+      </div>
+      <div class="empty-state sm" *ngIf="revenue.length === 0">No revenue data for this period.</div>
+    </div>
+
+    <!-- Payment Trends (incoming vs outgoing) -->
+    <div class="analytics-card full" *ngIf="trends.length > 0">
+      <div class="card-head">Payment Trends</div>
+      <div class="trend-chart">
+        <div class="trend-col" *ngFor="let t of trends">
+          <div class="trend-bars">
+            <div class="trend-bar incoming" [style.height.%]="(t.incoming / maxTrend) * 100" [title]="'In: ₹' + t.incoming"></div>
+            <div class="trend-bar outgoing" [style.height.%]="(t.outgoing / maxTrend) * 100" [title]="'Out: ₹' + t.outgoing"></div>
+          </div>
+          <div class="bar-label">{{ t.date | date:'dd/MM' }}</div>
+        </div>
+      </div>
+      <div class="trend-legend">
+        <span><span class="legend-dot incoming"></span> Incoming</span>
+        <span><span class="legend-dot outgoing"></span> Outgoing</span>
+      </div>
+    </div>
+
+  </ng-container>
+</div>
