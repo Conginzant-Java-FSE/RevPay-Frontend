@@ -48,15 +48,15 @@
 
       <div class="security-tips">
         <div class="tip">
-          <span class="tip-icon">🔒</span>
+          <span class="tip-icon"><mat-icon>lock</mat-icon></span>
           <span>Never share your MPIN with anyone</span>
         </div>
         <div class="tip">
-          <span class="tip-icon">🔢</span>
+          <span class="tip-icon"><mat-icon>pin</mat-icon></span>
           <span>Use 4 to 6 digits — numbers only</span>
         </div>
         <div class="tip">
-          <span class="tip-icon">🛡</span>
+          <span class="tip-icon"><mat-icon>shield</mat-icon></span>
           <span>Stored encrypted — we can never read it</span>
         </div>
       </div>
@@ -69,7 +69,7 @@
 
       <!-- Success state -->
       <div class="success-screen" *ngIf="success">
-        <div class="success-icon">🔐</div>
+        <div class="success-icon"><mat-icon>lock</mat-icon></div>
         <h2>MPIN Set Successfully!</h2>
         <p>Your account is fully set up. Redirecting to your dashboard…</p>
         <div class="progress-bar">
@@ -173,7 +173,7 @@
 
             <button class="btn-primary" type="button" (click)="submit()" [disabled]="loading">
               <span class="spinner" *ngIf="loading"></span>
-              <span>{{ loading ? 'Setting MPIN...' : '🔐 Set MPIN & Go to Dashboard' }}</span>
+              <span>{{ loading ? 'Setting MPIN...' : 'Set MPIN & Go to Dashboard' }}</span>
             </button>
 
           </div>
