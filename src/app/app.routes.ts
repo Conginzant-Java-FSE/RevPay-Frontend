@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 import { businessGuard } from './core/guards/business.guard';
 import { ShellComponent } from './shared/shell/shell.component';
+import { AdminShellComponent } from './shared/admin-shell/admin-shell.component';
 
 export const routes: Routes = [
   {
@@ -30,13 +32,29 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/legal/terms-conditions/terms-conditions.component')
       .then(m => m.TermsConditionsComponent),
   },
-  { path: 'contact',  
+  {
+    path: 'contact',
     loadComponent: () => import('./pages/legal/contact/contact.component')
-      .then(m => m.ContactComponent) 
+      .then(m => m.ContactComponent)
   },
-  { path: 'security', 
+  {
+    path: 'security',
     loadComponent: () => import('./pages/legal/security/security.component')
-      .then(m => m.SecurityComponent) 
+      .then(m => m.SecurityComponent)
+  },
+  {
+    path: 'admin/login',
+    loadComponent: () => import('./pages/admin/admin-login/admin-login.component')
+      .then(m => m.AdminLoginComponent),
+  },
+  {
+    path: 'admin',
+    component: AdminShellComponent,
+    canActivate: [adminGuard],
+    children: [
+      { path: '', loadComponent: () => import('./pages/admin/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent) },
+      { path: 'fraud-logs', loadComponent: () => import('./pages/admin/admin-fraud-logs/admin-fraud-logs.component').then(m => m.AdminFraudLogsComponent) },
+    ],
   },
   {
     path: 'init',
@@ -74,9 +92,10 @@ export const routes: Routes = [
       { path: 'add-funds', loadComponent: () => import('./pages/add-funds/add-funds.component').then(m => m.AddFundsComponent) },
       { path: 'withdraw', loadComponent: () => import('./pages/withdraw/withdraw.component').then(m => m.WithdrawComponent) },
       // Business only
-      { path: 'invoices',   canActivate: [businessGuard], loadComponent: () => import('./pages/invoices/invoices.component').then(m => m.InvoicesComponent) },
-      { path: 'loans',      canActivate: [businessGuard], loadComponent: () => import('./pages/loans/loans.component').then(m => m.LoansComponent) },
-      { path: 'analytics',  canActivate: [businessGuard], loadComponent: () => import('./pages/analytics/analytics.component').then(m => m.AnalyticsComponent) },
+      { path: 'invoices', canActivate: [businessGuard], loadComponent: () => import('./pages/invoices/invoices.component').then(m => m.InvoicesComponent) },
+      { path: 'loans', canActivate: [businessGuard], loadComponent: () => import('./pages/loans/loans.component').then(m => m.LoansComponent) },
+      { path: 'analytics', canActivate: [businessGuard], loadComponent: () => import('./pages/analytics/analytics.component').then(m => m.AnalyticsComponent) },
+      { path: 'live-market', canActivate: [businessGuard], loadComponent: () => import('./pages/live-market/live-market.component').then(m => m.LiveMarketComponent) },
     ]
   },
 
