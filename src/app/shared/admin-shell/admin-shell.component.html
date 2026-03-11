@@ -1,0 +1,24 @@
+<div class="admin-shell">
+  <header class="admin-header">
+    <a routerLink="/admin" class="logo">
+      <span class="logo-mark">R</span>
+      <span class="logo-text">RevPay Admin</span>
+    </a>
+    <nav class="admin-nav">
+      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <mat-icon>account_balance</mat-icon> Loans
+      </a>
+      <a routerLink="/admin/fraud-logs" routerLinkActive="active">
+        <mat-icon>warning</mat-icon> Fraud Logs
+      </a>
+    </nav>
+    <button class="logout-btn" (click)="logout()" [disabled]="loggingOut">
+      <mat-icon>logout</mat-icon>
+      <span *ngIf="!loggingOut">Logout</span>
+      <span *ngIf="loggingOut" class="spinner"></span>
+    </button>
+  </header>
+  <main class="admin-main">
+    <router-outlet></router-outlet>
+  </main>
+</div>

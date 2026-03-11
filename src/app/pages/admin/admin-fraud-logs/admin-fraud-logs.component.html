@@ -1,0 +1,66 @@
+<div class="page-layout">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Fraud Logs</h1>
+      <p class="page-sub">Monitor and manage detected fraud incidents</p>
+    </div>
+    <button class="btn-primary" (click)="loadFraudLogs()" [disabled]="loading">
+      <mat-icon>refresh</mat-icon> Refresh
+    </button>
+  </div>
+
+  <div class="alert success" *ngIf="successMsg">{{ successMsg }}</div>
+  <div class="alert error" *ngIf="error">{{ error }}</div>
+
+  <div class="loading-row" *ngIf="loading"><div class="spinner"></div></div>
+
+  <div *ngIf="!loading">
+    <div class="empty-state" *ngIf="fraudLogs.length === 0">
+      <span class="empty-icon">🛡️</span>
+      <p>No fraud logs found.</p>
+    </div>
+
+    <div class="card-wrap" *ngIf="fraudLogs.length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Reason</th>
+            <th>Amount</th>
+            <th>Detected At</th>
+            <th>Blocked</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="data-row" *ngFor="let log of fraudLogs">
+            <td class="name-cell">
+              <div>{{ log.userFullName }}</div>
+              <small class="muted">{{ log.userEmail }}</small>
+            </td>
+            <td class="reason-cell">{{ log.reason }}</td>
+            <td class="amount-cell" *ngIf="log.amount">₹{{ log.amount | number:'1.2-2' }}</td>
+            <td class="amount-cell" *ngIf="!log.amount">—</td>
+            <td class="date-cell">{{ log.detectedAt | date:'dd MMM y, HH:mm' }}</td>
+            <td>
+              <span class="status-pill" [class.blocked]="log.blocked" [class.active]="!log.blocked">
+                {{ log.blocked ? 'Blocked' : 'Active' }}
+              </span>
+            </td>
+            <td>
+              <button
+                class="btn-danger sm"
+                *ngIf="!log.blocked"
+                (click)="blockUser(log)"
+                [disabled]="blockingId === log.id"
+              >
+                {{ blockingId === log.id ? 'Blocking…' : 'Block User' }}
+              </button>
+              <span class="muted-cell" *ngIf="log.blocked">—</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

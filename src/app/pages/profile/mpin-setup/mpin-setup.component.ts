@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { MatIconModule } from '@angular/material/icon';
 
 function pinMatchValidator(group: AbstractControl) {
   const pin     = group.get('mtPin')?.value;
@@ -16,7 +15,7 @@ function pinMatchValidator(group: AbstractControl) {
 @Component({
   selector: 'app-mpin-setup',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatIconModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './mpin-setup.component.html',
   styleUrls: ['./mpin-setup.component.scss']
 })

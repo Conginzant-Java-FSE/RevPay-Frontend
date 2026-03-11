@@ -1,4 +1,4 @@
-<div class="auth-layout">
+<div class="auth-layout admin-theme">
 
   <!-- Left panel -->
   <div class="auth-left">
@@ -11,21 +11,21 @@
       <div class="orb orb-a"></div>
       <div class="orb orb-b"></div>
       <blockquote>
-        "RevPay has completely transformed how we manage business payments. The speed and transparency are unmatched."
+        "Admin portal for loan approvals, fraud monitoring, and platform oversight."
       </blockquote>
       <div class="testimonial-author">
-        <div class="author-avatar">MVS</div>
+        <div class="author-avatar">AD</div>
         <div>
-          <div class="author-name">Midhun V S</div>
-          <div class="author-role">CEO, RevPay.com</div>
+          <div class="author-name">Admin Portal</div>
+          <div class="author-role">RevPay Platform</div>
         </div>
       </div>
     </div>
 
     <div class="trust-row">
-      <span class="security-data"><mat-icon>security</mat-icon> 256-bit SSL</span>
-      <span class="pci-compliant"><mat-icon>check_circle</mat-icon> PCI Compliant</span>
-      <span class="real-time"><mat-icon>flash_on</mat-icon> Real-time</span>
+      <span class="security-data"><mat-icon>admin_panel_settings</mat-icon> Admin Access</span>
+      <span class="pci-compliant"><mat-icon>verified_user</mat-icon> Secure</span>
+      <span class="real-time"><mat-icon>shield</mat-icon> Protected</span>
     </div>
   </div>
 
@@ -33,8 +33,8 @@
   <div class="auth-right">
     <div class="form-wrap">
       <div class="form-header">
-        <h1>Welcome back</h1>
-        <p>Sign in to your RevPay account</p>
+        <h1>Admin Sign In</h1>
+        <p>Sign in to the RevPay admin portal</p>
       </div>
 
       <div class="error-banner" *ngIf="error">
@@ -43,27 +43,24 @@
 
       <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
         <div class="field-group">
-          <label for="emailOrPhone">Email or Phone Number</label>
-          <div class="input-wrap" [class.error]="emailOrPhone.invalid && emailOrPhone.touched">
+          <label for="email">Admin Email</label>
+          <div class="input-wrap" [class.error]="email.invalid && email.touched">
             <span class="input-icon"><mat-icon>email</mat-icon></span>
             <input
-              id="emailOrPhone"
-              type="text"
-              formControlName="emailOrPhone"
-              placeholder="you@example.com or 5550000000"
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="admin@revpay.com"
               autocomplete="username"
             />
           </div>
-          <div class="field-error" *ngIf="emailOrPhone.invalid && emailOrPhone.touched">
-            Email or phone is required.
+          <div class="field-error" *ngIf="email.invalid && email.touched">
+            Valid email is required.
           </div>
         </div>
 
         <div class="field-group">
-          <div class="label-row">
-            <label for="password">Password</label>
-            <a routerLink="/forgot-password" class="forgot-link">Forgot password?</a>
-          </div>
+          <label for="password">Password</label>
           <div class="input-wrap" [class.error]="password.invalid && password.touched">
             <span class="input-icon"><mat-icon>key</mat-icon></span>
             <input
@@ -91,9 +88,8 @@
       <div class="divider"><span>or</span></div>
 
       <p class="auth-switch">
-        Don't have an account?
-        <a routerLink="/register">Create one free</a>
-        · <a routerLink="/admin/login">Admin login</a>
+        Not an admin?
+        <a routerLink="/login">User login</a>
       </p>
     </div>
   </div>
