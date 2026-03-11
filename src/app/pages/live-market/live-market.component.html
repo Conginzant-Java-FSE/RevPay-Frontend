@@ -1,0 +1,192 @@
+<div class="lm-root">
+
+  <!-- ── Top Header ──────────────────────────────────────────────────────── -->
+  <div class="lm-header">
+    <div class="lm-header-left">
+      <div class="lm-badge">
+        <span class="dot-live"></span> LIVE
+      </div>
+      <div>
+        <h1 class="lm-title">Market Dashboard</h1>
+        <p class="lm-sub" *ngIf="lastRefresh()">
+          Last updated: {{ lastRefresh() | date:'HH:mm:ss' }} &nbsp;·&nbsp; Auto-refresh every 60s
+        </p>
+      </div>
+    </div>
+    <button class="btn-refresh" (click)="manualRefresh()" [disabled]="anyLoading()" type="button">
+      <span class="refresh-icon" [class.spin]="anyLoading()">↻</span>
+      {{ anyLoading() ? 'Refreshing…' : 'Refresh Now' }}
+    </button>
+  </div>
+
+  <!-- ── Error Banner ───────────────────────────────────────────────────── -->
+  <div class="lm-alert" *ngIf="error()">
+    <span>⚠️</span> {{ error() }}
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       SECTION 1 — Precious Metals (Gold & Silver)
+  ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="lm-section">
+    <div class="section-label">
+      <span class="section-icon">🥇</span> Precious Metals
+      <small class="section-note">Per troy oz · Live via Frankfurter (XAU/XAG)</small>
+    </div>
+
+    <div class="spinner-row" *ngIf="loadingMetals()">
+      <div class="lm-spinner"></div>
+    </div>
+
+    <div class="metals-grid" *ngIf="!loadingMetals()">
+
+      <div class="metal-card" [class.gold-card]="m.metal === 'gold'" [class.silver-card]="m.metal === 'silver'"
+        *ngFor="let m of metals()">
+        <div class="metal-icon">{{ m.metal === 'gold' ? '🥇' : '🥈' }}</div>
+        <div class="metal-body">
+          <div class="metal-name-row">
+            <span class="metal-name">{{ m.metal === 'gold' ? 'Gold' : 'Silver' }}</span>
+            <span class="metal-date-badge" *ngIf="m.date">{{ m.date }}</span>
+          </div>
+          <div class="metal-price">
+            ${{ m.price_usd | number:'1.2-2' }}
+            <span class="metal-unit">/ troy oz</span>
+          </div>
+          <div class="metal-inr">₹{{ m.price_inr | number:'1.0-0' }} <span class="metal-unit">/ troy oz</span></div>
+          <div class="metal-inr-gram">≈ ₹{{ m.price_inr_per_gram | number:'1.2-2' }} <span class="metal-unit">/
+              gram</span></div>
+        </div>
+      </div>
+
+      <div class="empty-metals" *ngIf="metals().length === 0">
+        <span>🔍</span> Metal data unavailable — please try refreshing.
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       SECTION 2 — Cryptocurrency
+  ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="lm-section">
+    <div class="section-label">
+      <span class="section-icon">₿</span> Cryptocurrency
+      <small class="section-note">Via CoinGecko (free) · USD</small>
+    </div>
+
+    <div class="spinner-row" *ngIf="loadingCrypto()">
+      <div class="lm-spinner"></div>
+    </div>
+
+    <div class="crypto-grid" *ngIf="!loadingCrypto() && cryptos().length > 0">
+      <div class="crypto-card" *ngFor="let c of cryptos()">
+        <div class="crypto-info">
+          <img class="crypto-img" [src]="c.image" [alt]="c.name" />
+          <div>
+            <div class="crypto-name">{{ c.name }}</div>
+            <div class="crypto-sym">{{ c.symbol }}</div>
+          </div>
+        </div>
+        <div class="crypto-price">${{ c.price | number:'1.2-2' }}</div>
+        <div class="crypto-change" [class]="changeClass(c.change24h)">
+          {{ sign(c.change24h) }}{{ c.change24h | number:'1.2-2' }}%
+        </div>
+        <div class="crypto-meta">
+          <span>H: ${{ c.high24h | number:'1.2-2' }}</span>
+          <span>L: ${{ c.low24h | number:'1.2-2' }}</span>
+        </div>
+        <div class="crypto-vol">Vol: {{ formatVolume(c.volume) }}</div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!loadingCrypto() && cryptos().length === 0">
+      <span>📊</span> Crypto data unavailable.
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       SECTION 3 — Forex / FX Rates
+  ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="lm-section">
+    <div class="section-label">
+      <span class="section-icon">💱</span> Forex Rates (USD base)
+      <small class="section-note" *ngIf="fxDate()">Updated {{ fxDate() }} · Via Frankfurter</small>
+    </div>
+
+    <div class="spinner-row" *ngIf="loadingFx()">
+      <div class="lm-spinner"></div>
+    </div>
+
+    <div class="fx-table" *ngIf="!loadingFx() && fxRates().length > 0">
+      <div class="fx-head">
+        <span>Currency</span>
+        <span>Rate (vs USD)</span>
+        <span>Relative Strength</span>
+      </div>
+      <div class="fx-row" *ngFor="let row of fxRates()">
+        <span class="fx-code">{{ row.currency }}</span>
+        <span class="fx-val">{{ row.rate | number:'1.4-4' }}</span>
+        <div class="fx-bar-wrap">
+          <div class="fx-bar" [style.width.%]="barWidth(row.rate)"></div>
+          <span class="fx-bar-label">{{ barWidth(row.rate) }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="!loadingFx() && fxRates().length === 0">
+      <span>💱</span> FX data unavailable.
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       SECTION 4 — Stocks (Alpha Vantage)
+  ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="lm-section">
+    <div class="section-label">
+      <span class="section-icon">📈</span> Stock Quotes
+      <small class="section-note">Via Alpha Vantage · Free demo key (IBM only)</small>
+    </div>
+
+    <div class="spinner-row" *ngIf="loadingStocks()">
+      <div class="lm-spinner"></div>
+    </div>
+
+    <div class="stock-table" *ngIf="!loadingStocks() && stocks().length > 0">
+      <div class="stock-head">
+        <span>Symbol</span>
+        <span>Price ($)</span>
+        <span>Open</span>
+        <span>High</span>
+        <span>Low</span>
+        <span>Prev Close</span>
+        <span>Change</span>
+        <span>% Chg</span>
+      </div>
+      <div class="stock-row" *ngFor="let s of stocks()">
+        <span class="stock-sym">{{ s.symbol }}</span>
+        <span class="stock-price">{{ s.price | number:'1.2-2' }}</span>
+        <span>{{ s.open | number:'1.2-2' }}</span>
+        <span>{{ s.high | number:'1.2-2' }}</span>
+        <span>{{ s.low | number:'1.2-2' }}</span>
+        <span>{{ s.prevClose | number:'1.2-2' }}</span>
+        <span [class]="changeClass(s.change)">
+          {{ sign(s.change) }}{{ s.change | number:'1.2-2' }}
+        </span>
+        <span [class]="changeClass(s.changePct)">
+          {{ sign(s.changePct) }}{{ s.changePct | number:'1.2-2' }}%
+        </span>
+      </div>
+    </div>
+
+    <div class="stock-note" *ngIf="!loadingStocks() && stocks().length === 0">
+      <span>📋</span> Stock data unavailable. The free demo key works only for IBM during market hours.
+    </div>
+
+    <div class="api-note">
+      <span>ℹ</span> Get a free API key at
+      <a href="https://www.alphavantage.co/support/#api-key" target="_blank">alphavantage.co</a>
+      (25 req/day free tier) and replace <code>ALPHA_KEY</code> in the component
+      to unlock AAPL, MSFT, GOOGL, etc.
+    </div>
+  </section>
+
+</div>

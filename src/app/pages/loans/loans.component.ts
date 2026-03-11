@@ -1,3 +1,5 @@
+
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -36,41 +38,67 @@ export class LoansComponent implements OnInit {
 
   constructor(private loanService: LoanService, private fb: FormBuilder) {
     this.applyForm = this.fb.group({
-      loanAmount:       ['', [Validators.required, Validators.min(10000)]],
-      purpose:          ['', Validators.required],
-      tenureMonths:     [12, Validators.required],
-      annualRevenue:    ['', [Validators.required, Validators.min(0)]],
-      yearsInBusiness:  ['', [Validators.required, Validators.min(0)]],
-      employeeCount:    ['', [Validators.required, Validators.min(1)]],
-      collateral:       [''],
+      loanAmount: ['', [Validators.required, Validators.min(1000)]],
+      purpose: ['', Validators.required],
+      tenureMonths: [12, Validators.required],
+      annualRevenue: ['', [Validators.required, Validators.min(0)]],
+      yearsInBusiness: ['', [Validators.required, Validators.min(0)]],
+      employeeCount: ['', [Validators.required, Validators.min(1)]],
+      collateral: [''],
     });
 
+    
+
     this.repayForm = this.fb.group({
-      amount: ['', [Validators.required, Validators.min(1)]],
-      pin:    ['', [Validators.required, Validators.pattern(/^\d{4,6}$/)]],
+  amount: ['', Validators.required],
+  pin: ['', [Validators.required, Validators.pattern(/^\d{4,6}$/)]],
+});
+  }
+
+  ngOnInit(): void {
+    this.load();
+  }
+
+  load(): void {
+    this.loading = true;
+    this.loanService.getAll().subscribe({
+      next: (res) => {
+        this.loans = res.data?.content ?? [];
+        this.loading = false;
+      },
+      error: () => { this.loading = false; },
     });
   }
 
-  ngOnInit(): void { this.load(); }
+  openApply(): void {
+    this.applyForm.reset({ tenureMonths: 12 });
+    this.showApplyModal = true;
+  }
 
-  load(): void {
-  this.loading = true;
-  this.loanService.getAll().subscribe({
-    next: (res) => {
-      this.loans = res.data?.content ?? [];
-      this.loading = false;
-    },
-    error: () => { this.loading = false; },
-  });
-}
-
-  openApply(): void { this.applyForm.reset({ tenureMonths: 12 }); this.showApplyModal = true; }
-  closeApply(): void { this.showApplyModal = false; this.error = ''; }
+  closeApply(): void {
+    this.showApplyModal = false;
+    this.error = '';
+  }
 
   submitApply(): void {
-    if (this.applyForm.invalid) { this.applyForm.markAllAsTouched(); return; }
+    if (this.applyForm.invalid) {
+      this.applyForm.markAllAsTouched();
+      return;
+    }
     this.submitting = true;
-    this.loanService.apply(this.applyForm.value).subscribe({
+
+    // its Convert all numeric fields to proper types before sending
+    const payload = {
+      loanAmount: Number(this.applyForm.value.loanAmount),
+      purpose: this.applyForm.value.purpose,
+      tenureMonths: Number(this.applyForm.value.tenureMonths),
+      annualRevenue: Number(this.applyForm.value.annualRevenue),
+      yearsInBusiness: Number(this.applyForm.value.yearsInBusiness),
+      employeeCount: Number(this.applyForm.value.employeeCount),
+      collateral: this.applyForm.value.collateral || null,
+    };
+
+    this.loanService.apply(payload).subscribe({
       next: () => {
         this.submitting = false;
         this.closeApply();
@@ -78,37 +106,110 @@ export class LoansComponent implements OnInit {
         this.load();
         setTimeout(() => this.successMsg = '', 4000);
       },
-      error: (err) => { this.error = err.error?.message ?? 'Failed.'; this.submitting = false; },
+      error: (err) => {
+        this.error = err.error?.message ?? 'Failed to submit loan.';
+        this.submitting = false;
+      },
     });
   }
 
-  openDetail(loan: Loan): void {
-    this.selectedLoan = loan;
-    this.showDetailModal = true;
-    this.schedule = [];
-    if (loan.status === 'ACTIVE' || loan.status === 'APPROVED') {
-      this.scheduleLoading = true;
-      this.loanService.getRepaymentSchedule(loan.loanId).subscribe({
-        next: (res) => { this.schedule = res.data ?? []; this.scheduleLoading = false; },
-        error: () => { this.scheduleLoading = false; },
-      });
+  // openDetail(loan: Loan): void {
+  //   this.selectedLoan = loan;
+  //   this.showDetailModal = true;
+  //   this.schedule = [];
+  //   if (loan.status === 'ACTIVE' || loan.status === 'APPROVED') {
+  //     this.scheduleLoading = true;
+  //     this.loanService.getRepaymentSchedule(loan.loanId).subscribe({
+  //       next: (res) => {
+  //         this.schedule = res.data ?? [];
+  //         this.scheduleLoading = false;
+  //       },
+  //       error: () => { this.scheduleLoading = false; },
+  //     });
+  //   }
+  // }
+
+  
+openDetail(loan: Loan): void {
+  this.selectedLoan = null;  // clear previous selection
+  this.showDetailModal = true;
+  this.schedule = [];
+
+  this.loanService.getById(loan.loanId).subscribe({
+    next: (res) => {
+      this.selectedLoan = res.data ?? null;
+      if (this.selectedLoan?.status === 'ACTIVE' || this.selectedLoan?.status === 'APPROVED') {
+        this.loadRepaymentSchedule(this.selectedLoan.loanId);
+      }
+    },
+    error: () => {
+      this.selectedLoan = loan; // fallback to list data if detail API fails
     }
+  });
+} 
+loadRepaymentSchedule(loanId: number): void {
+  this.scheduleLoading = true;
+  this.loanService.getRepaymentSchedule(loanId).subscribe({
+    next: (res) => {
+      this.schedule = res.data ?? [];
+      this.scheduleLoading = false;
+    },
+    error: () => {
+      this.scheduleLoading = false;
+    },
+  });
+}
+
+  closeDetail(): void {
+    this.showDetailModal = false;
+    this.selectedLoan = null;
   }
 
-  closeDetail(): void { this.showDetailModal = false; this.selectedLoan = null; }
+  // openRepay(loan: Loan): void {
+  //   this.selectedLoan = loan;
+  //   this.repayForm.patchValue({ amount: loan.monthlyEmi });
+  //   this.showRepayModal = true;
+  // }
 
   openRepay(loan: Loan): void {
-    this.selectedLoan = loan;
-    this.repayForm.patchValue({ amount: loan.monthlyEmi });
-    this.showRepayModal = true;
-  }
+  this.selectedLoan = loan;
 
-  closeRepay(): void { this.showRepayModal = false; this.error = ''; }
+  const emi = loan.monthlyEmi;
+  const outstanding = loan.outstandingBalance ?? loan.totalRepayable;
 
+  this.repayForm.patchValue({
+    amount: emi,
+    pin: ''
+  });
+
+  // Dynamic validation
+  this.repayForm.get('amount')?.setValidators([
+    Validators.required,
+    Validators.min(emi),
+    Validators.max(outstanding)
+  ]);
+
+  this.repayForm.get('amount')?.updateValueAndValidity();
+
+  this.showRepayModal = true;
+}
+
+  // closeRepay(): void {
+  //   this.showRepayModal = false;
+  //   this.error = '';
+  // }
+closeRepay(): void {
+  this.showRepayModal = false;
+  this.error = '';
+  this.repayForm.reset();
+}
   submitRepay(): void {
     if (!this.selectedLoan || this.repayForm.invalid) return;
     this.submitting = true;
-    const { amount, pin } = this.repayForm.value;
+
+    const amount = Number(this.repayForm.value.amount);
+    const pin = this.repayForm.value.pin;
+
     this.loanService.repay(this.selectedLoan.loanId, amount, pin).subscribe({
       next: () => {
         this.submitting = false;
@@ -117,12 +218,21 @@ export class LoansComponent implements OnInit {
         this.load();
         setTimeout(() => this.successMsg = '', 3000);
       },
-      error: (err) => { this.error = err.error?.message ?? 'Repayment failed.'; this.submitting = false; },
+      error: (err) => {
+        this.error = err.error?.message ?? 'Repayment failed.';
+        this.submitting = false;
+      },
     });
   }
 
   statusColor(s: string): string {
-    const m: Record<string, string> = { PENDING: 'pending', APPROVED: 'approved', REJECTED: 'rejected', ACTIVE: 'active', CLOSED: 'closed' };
+    const m: Record<string, string> = {
+      PENDING: 'pending',
+      APPROVED: 'approved',
+      REJECTED: 'rejected',
+      ACTIVE: 'active',
+      CLOSED: 'closed'
+    };
     return m[s] ?? '';
   }
 
@@ -134,4 +244,3 @@ export class LoansComponent implements OnInit {
   af(n: string) { return this.applyForm.get(n); }
   rf(n: string) { return this.repayForm.get(n); }
 }
-

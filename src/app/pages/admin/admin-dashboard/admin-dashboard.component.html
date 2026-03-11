@@ -1,0 +1,90 @@
+<div class="page-layout">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Loan Approvals</h1>
+      <p class="page-sub">Review and approve or reject pending loan applications</p>
+    </div>
+    <button class="btn-primary" (click)="loadLoans()" [disabled]="loading">
+      <mat-icon>refresh</mat-icon> Refresh
+    </button>
+  </div>
+
+  <div class="alert success" *ngIf="successMsg">{{ successMsg }}</div>
+  <div class="alert error" *ngIf="error">{{ error }}</div>
+
+  <div class="loading-row" *ngIf="loading"><div class="spinner"></div></div>
+
+  <div *ngIf="!loading">
+    <section class="section" *ngIf="pendingLoans.length > 0">
+      <h2 class="section-title">Pending Approval ({{ pendingLoans.length }})</h2>
+      <div class="loan-list">
+        <div class="loan-card" *ngFor="let loan of pendingLoans">
+          <div class="loan-card-top">
+            <div class="loan-info">
+              <div class="loan-purpose">{{ loan.purpose }}</div>
+              <div class="loan-amount">₹{{ loan.loanAmount | number:'1.2-2' }}</div>
+              <div class="loan-meta">{{ loan.tenureMonths }} months · {{ loan.interestRate }}% p.a.</div>
+              <div class="loan-meta">Applied: {{ loan.createdAt | date:'dd MMM y' }}</div>
+            </div>
+            <span class="status-pill pending">{{ loan.status }}</span>
+          </div>
+          <div class="loan-actions">
+            <button class="btn-primary sm" (click)="approve(loan)" [disabled]="submitting">Approve</button>
+            <button class="btn-danger sm" (click)="openReject(loan)">Reject</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" *ngIf="otherLoans.length > 0">
+      <h2 class="section-title">All Loans</h2>
+      <div class="loan-list">
+        <div class="loan-card" *ngFor="let loan of otherLoans">
+          <div class="loan-card-top">
+            <div class="loan-info">
+              <div class="loan-purpose">{{ loan.purpose }}</div>
+              <div class="loan-amount">₹{{ loan.loanAmount | number:'1.2-2' }}</div>
+              <div class="loan-meta">{{ loan.tenureMonths }} months · {{ loan.interestRate }}% p.a.</div>
+            </div>
+            <span class="status-pill" [class]="statusColor(loan.status)">{{ loan.status }}</span>
+          </div>
+          <div class="rejection-note" *ngIf="loan.status === 'REJECTED' && loan.rejectionReason">
+            Reason: {{ loan.rejectionReason }}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="empty-state" *ngIf="loans.length === 0">
+      <span class="empty-icon">🏦</span>
+      <p>No loan applications found.</p>
+    </div>
+  </div>
+
+  <!-- Reject Modal -->
+  <div class="modal-backdrop" *ngIf="showRejectModal && selectedLoan" (click)="closeReject()">
+    <div class="modal sm" (click)="$event.stopPropagation()">
+      <div class="modal-head">
+        <h3>Reject Loan</h3>
+        <button class="close-btn" (click)="closeReject()">✕</button>
+      </div>
+      <form [formGroup]="rejectForm" (ngSubmit)="submitReject()" class="modal-body">
+        <div class="alert error" *ngIf="error">{{ error }}</div>
+        <p class="modal-desc">Rejecting loan #{{ selectedLoan.loanId }} (₹{{ selectedLoan.loanAmount | number:'1.2-2' }})</p>
+        <div class="form-group">
+          <label>Rejection Reason</label>
+          <textarea formControlName="reason" rows="3" placeholder="Provide a reason for rejection..."></textarea>
+          <span class="field-error" *ngIf="rejectForm.get('reason')?.touched && rejectForm.get('reason')?.invalid">
+            Reason is required (min 3 characters).
+          </span>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-ghost" (click)="closeReject()">Cancel</button>
+          <button type="submit" class="btn-danger" [disabled]="submitting">
+            {{ submitting ? 'Rejecting…' : 'Reject Loan' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

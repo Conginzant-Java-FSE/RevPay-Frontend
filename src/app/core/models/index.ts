@@ -203,4 +203,23 @@ export interface PaymentTrend {
   outgoing: number;
 }
 
+// ── Fraud Log (Admin) ─────────────────────────────────────────
+export interface FraudLogUser {
+  userId: number;
+  fullName?: string;
+  email?: string;
+  phone?: string;
+}
+
+export interface FraudLog {
+  id: number;
+  userId: number;
+  userFullName: string;
+  userEmail: string;
+  amount: number;
+  reason: string;
+  detectedAt: string;
+  blocked: boolean;
+}
+
 export { UserProfile, BankAccountSummary } from './user.model';
