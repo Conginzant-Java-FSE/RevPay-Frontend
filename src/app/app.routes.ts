@@ -76,12 +76,19 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/profile/mpin-setup/mpin-setup.component').then(m => m.MpinSetupComponent),
     canActivate: [AuthGuard]
   },
+  
 
   {
     path: '',
     component: ShellComponent,
     canActivate: [AuthGuard],
     children: [
+      {
+  path: 'chat-history',
+  loadComponent: () =>
+    import('./pages/chat-history/chat-history.component')
+      .then(m => m.ChatHistoryComponent),
+},
       { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent) },
       { path: 'transactions', loadComponent: () => import('./pages/transactions/transactions.component').then(m => m.TransactionsComponent) },
       { path: 'payment-methods', loadComponent: () => import('./pages/payment-methods/payment-methods.component').then(m => m.PaymentMethodsComponent) },
