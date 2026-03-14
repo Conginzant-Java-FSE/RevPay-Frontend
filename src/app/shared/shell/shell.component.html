@@ -31,9 +31,13 @@
         <mat-icon class="nav-icon">notifications</mat-icon> Notifications
         <span class="nav-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
       </a>
+<a class="nav-item" routerLink="/chat-history" routerLinkActive="active">
+  <mat-icon class="nav-icon">people</mat-icon> People
+</a>
       <a class="nav-item" routerLink="/settings" routerLinkActive="active">
         <mat-icon class="nav-icon">settings</mat-icon> Settings
       </a>
+      
 
       <!-- Business only -->
       <ng-container *ngIf="isBusinessAccount">

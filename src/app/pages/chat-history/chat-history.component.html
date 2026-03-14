@@ -1,0 +1,315 @@
+<div class="ch-root">
+
+  <!-- ══════════════════════════════════════════════════
+       LEFT PANEL — Peer / People list
+  ══════════════════════════════════════════════════ -->
+  <div class="peer-panel" [class.hidden-mobile]="!!activePeer">
+
+    <div class="panel-head">
+      <div class="panel-head-left">
+        <h2 class="panel-title">People</h2>
+        <span class="txn-count" *ngIf="!loading">{{ peers.length }} contacts</span>
+      </div>
+      <div class="wallet-chip">
+        <span class="wallet-label">Balance</span>
+        <span class="wallet-val">₹{{ walletBalance | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input [(ngModel)]="search" placeholder="Search by name or email…" />
+    </div>
+
+    <!-- Skeleton -->
+    <ng-container *ngIf="loading">
+      <div class="peer-skel" *ngFor="let _ of [1,2,3,4,5,6]">
+        <div class="skel-av"></div>
+        <div class="skel-body">
+          <div class="skel-line w60"></div>
+          <div class="skel-line w40"></div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Empty -->
+    <div class="peer-empty" *ngIf="!loading && filteredPeers.length === 0">
+      <span class="empty-ico">👥</span>
+      <p *ngIf="!search">No transactions yet.<br>Send money to someone to see them here.</p>
+      <p *ngIf="search">No results for "{{ search }}"</p>
+    </div>
+
+    <!-- Peer list -->
+    <div class="peer-list" *ngIf="!loading && filteredPeers.length > 0">
+      <div
+        class="peer-item"
+        *ngFor="let p of filteredPeers"
+        [class.is-active]="activePeer?.userId === p.userId"
+        (click)="openChat(p)">
+
+        <div class="p-avatar" [style.background]="avatarColor(p.fullName)">
+          {{ p.initials }}
+        </div>
+
+        <div class="p-info">
+          <div class="p-row top">
+            <span class="p-name">{{ p.fullName }}</span>
+            <span class="p-time">{{ formatLastTime(p.lastCreatedAt) }}</span>
+          </div>
+          <div class="p-row bottom">
+            <span class="p-preview" [class.debit]="p.lastType === 'SEND'">
+              <ng-container *ngIf="p.lastType === 'SEND'">↗ ₹{{ p.lastAmount | number:'1.0-0' }}</ng-container>
+              <ng-container *ngIf="p.lastType === 'RECEIVE'">↙ ₹{{ p.lastAmount | number:'1.0-0' }}</ng-container>
+            </span>
+            <span class="p-count">{{ p.transactions.length }} txns</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       RIGHT PANEL — Chat thread
+  ══════════════════════════════════════════════════ -->
+  <div class="chat-panel" [class.visible-mobile]="!!activePeer">
+
+    <!-- Placeholder when nothing is selected -->
+    <div class="chat-placeholder" *ngIf="!activePeer">
+      <div class="ph-art">
+        <div class="ph-ring r1"></div>
+        <div class="ph-ring r2"></div>
+        <div class="ph-ring r3"></div>
+        <span class="ph-symbol">₹</span>
+      </div>
+      <h3>Select a person</h3>
+      <p>Tap someone on the left to view your transaction history and send money instantly.</p>
+    </div>
+
+    <!-- ─── Active chat ─────────────────────────────────── -->
+    <ng-container *ngIf="activePeer as peer">
+
+      <!-- Chat header -->
+      <div class="chat-head">
+        <button class="back-btn" (click)="closeChat()">←</button>
+        <div class="ch-avatar" [style.background]="avatarColor(peer.fullName)">
+          {{ peer.initials }}
+        </div>
+        <div class="ch-info">
+          <span class="ch-name">{{ peer.fullName }}</span>
+          <span class="ch-email">{{ peer.email }}</span>
+        </div>
+        <button class="send-fab-btn" (click)="startSend()" *ngIf="sendStep === 'idle'">
+          ↗ Send Money
+        </button>
+      </div>
+
+      <!-- Message thread -->
+      <div class="thread" #threadEl>
+        <ng-container *ngFor="let t of peer.transactions; let i = index">
+
+          <!-- Date divider -->
+          <div class="date-divider" *ngIf="showDateSep(peer.transactions, i)">
+            <span>{{ formatDate(t.createdAt) }}</span>
+          </div>
+
+          <!-- Bubble -->
+          <div [class]="bubbleClass(t)" (click)="openTxn(t)">
+
+            <!-- Amount row -->
+            <div class="b-amount-row">
+              <span class="b-sign" [class.neg]="isSent(t)" [class.pos]="!isSent(t)">
+                {{ isSent(t) ? '−' : '+' }}
+              </span>
+              <span class="b-amount">₹{{ t.amount | number:'1.2-2' }}</span>
+            </div>
+
+            <!-- Note -->
+            <div class="b-note" *ngIf="t.note">{{ t.note }}</div>
+
+            <!-- Footer: time + status -->
+            <div class="b-footer">
+              <span class="b-time">{{ formatTime(t.createdAt) }}</span>
+              <span class="b-status" [style.color]="statusColor(t.status)">
+                {{ statusIcon(t.status) }}
+              </span>
+            </div>
+          </div>
+
+        </ng-container>
+      </div>
+
+      <!-- ─── Send panel (bottom) ──────────────────────── -->
+      <div class="send-panel">
+
+        <!-- idle hint -->
+        <div class="sp-idle" *ngIf="sendStep === 'idle'">
+          <span>Tap <strong>↗ Send Money</strong> to pay {{ peer.fullName }}</span>
+        </div>
+
+        <!-- Step 1: Amount + Note -->
+        <div class="sp-form" *ngIf="sendStep === 'form'">
+          <div class="sp-header">
+            <span class="sp-title">Send to <strong>{{ peer.fullName }}</strong></span>
+            <button class="sp-cancel" (click)="resetSend()">✕</button>
+          </div>
+
+          <div class="amount-row">
+            <span class="rupee">₹</span>
+            <input
+              class="amount-input"
+              type="number"
+              [(ngModel)]="sendAmount"
+              placeholder="0"
+              min="1"
+              autofocus />
+          </div>
+
+          <input
+            class="note-input"
+            type="text"
+            [(ngModel)]="sendNote"
+            placeholder="Add a note (optional)" />
+
+          <div class="sp-error" *ngIf="sendError">{{ sendError }}</div>
+
+          <div class="sp-balance">
+            Available balance: <strong>₹{{ walletBalance | number:'1.2-2' }}</strong>
+          </div>
+
+          <button class="sp-btn" (click)="goToPin()">Continue →</button>
+        </div>
+
+        <!-- Step 2: PIN -->
+        <div class="sp-form" *ngIf="sendStep === 'pin'">
+          <div class="sp-header">
+            <button class="sp-back" (click)="sendStep = 'form'">← Back</button>
+            <span class="sp-title">
+              Pay <strong>₹{{ sendAmount | number:'1.2-2' }}</strong>
+              to <strong>{{ peer.fullName }}</strong>
+            </span>
+            <button class="sp-cancel" (click)="resetSend()">✕</button>
+          </div>
+
+          <div class="pin-label">Enter Transaction PIN</div>
+
+          <div class="pin-field" [class.pin-focus]="true">
+            <input
+              class="pin-input"
+              [type]="showPin ? 'text' : 'password'"
+              [(ngModel)]="pin"
+              placeholder="● ● ● ●"
+              maxlength="6"
+              autocomplete="one-time-code" />
+            <button class="eye-toggle" type="button" (click)="showPin = !showPin">
+              {{ showPin ? '🙈' : '👁' }}
+            </button>
+          </div>
+
+          <div class="sp-error" *ngIf="sendError">{{ sendError }}</div>
+
+          <button class="sp-btn pay" (click)="confirmSend()" [disabled]="sending">
+            <span *ngIf="!sending">🔒 Pay Now</span>
+            <span class="sp-spinner" *ngIf="sending"></span>
+          </button>
+        </div>
+
+        <!-- Step 3a: Success -->
+        <div class="sp-result success" *ngIf="sendStep === 'success'">
+          <div class="result-icon">✓</div>
+          <div class="result-text">
+            <strong>₹{{ sendAmount | number:'1.2-2' }}</strong> sent to {{ peer.fullName }}
+          </div>
+          <button class="sp-btn ghost" (click)="resetSend()">Done</button>
+        </div>
+
+        <!-- Step 3b: Error -->
+        <div class="sp-result error-result" *ngIf="sendStep === 'error'">
+          <div class="result-icon fail">✕</div>
+          <div class="result-text">{{ sendError }}</div>
+          <button class="sp-btn ghost" (click)="sendStep = 'pin'">Try Again</button>
+        </div>
+
+      </div>
+    </ng-container>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     Transaction Detail Bottom Sheet
+══════════════════════════════════════════════════ -->
+<div class="sheet-backdrop" *ngIf="selectedTxn" (click)="closeTxn()">
+  <div class="detail-sheet" (click)="$event.stopPropagation()">
+    <div class="sheet-handle"></div>
+
+    <!-- Icon -->
+    <div class="sheet-icon-wrap"
+      [class.sent-wrap]="isSent(selectedTxn)"
+      [class.recv-wrap]="!isSent(selectedTxn)">
+      {{ isSent(selectedTxn) ? '↗' : '↙' }}
+    </div>
+
+    <!-- Amount -->
+    <div class="sheet-amount"
+      [class.negative]="isSent(selectedTxn)"
+      [class.positive]="!isSent(selectedTxn)">
+      {{ isSent(selectedTxn) ? '−' : '+' }}₹{{ selectedTxn.amount | number:'1.2-2' }}
+    </div>
+
+    <!-- Status badge -->
+    <span class="sheet-status-pill" [class]="statusPillClass(selectedTxn.status)">
+      {{ statusIcon(selectedTxn.status) }} {{ selectedTxn.status }}
+    </span>
+
+    <!-- Detail rows -->
+    <div class="sheet-body">
+
+      <div class="s-row">
+        <span class="s-label">{{ isSent(selectedTxn) ? 'To' : 'From' }}</span>
+        <div class="s-val-group">
+          <span class="s-val">{{ selectedTxn.counterparty?.fullName ?? '—' }}</span>
+          <span class="s-sub">{{ selectedTxn.counterparty?.email ?? '' }}</span>
+        </div>
+      </div>
+
+      <div class="s-row" *ngIf="selectedTxn.note">
+        <span class="s-label">Note</span>
+        <span class="s-val">{{ selectedTxn.note }}</span>
+      </div>
+
+      <div class="s-row">
+        <span class="s-label">Date</span>
+        <span class="s-val">{{ formatDate(selectedTxn.createdAt) }}</span>
+      </div>
+
+      <div class="s-row">
+        <span class="s-label">Time</span>
+        <span class="s-val">{{ formatTime(selectedTxn.createdAt) }}</span>
+      </div>
+
+      <div class="s-row" *ngIf="selectedTxn.completedAt">
+        <span class="s-label">Completed</span>
+        <span class="s-val">{{ formatTime(selectedTxn.completedAt) }}, {{ formatDate(selectedTxn.completedAt) }}</span>
+      </div>
+
+      <div class="s-row" *ngIf="selectedTxn.balanceAfter !== undefined">
+        <span class="s-label">Balance After</span>
+        <span class="s-val">₹{{ selectedTxn.balanceAfter | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="s-row">
+        <span class="s-label">Txn ID</span>
+        <span class="s-val mono">#{{ selectedTxn.transactionId }}</span>
+      </div>
+
+      <div class="s-row">
+        <span class="s-label">Currency</span>
+        <span class="s-val">{{ selectedTxn.currency }}</span>
+      </div>
+
+    </div>
+
+    <button class="sheet-close-btn" (click)="closeTxn()">Close</button>
+  </div>
+</div>
