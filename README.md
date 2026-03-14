@@ -195,10 +195,6 @@ localStorage.removeItem('revpay_token');
 
 > A full-stack financial web application built with Spring Boot microservices, enabling secure digital payments, wallet management, invoicing, and business loans for personal and business users.
 
----
-
-## System Architecture
-
 
 ---
 
