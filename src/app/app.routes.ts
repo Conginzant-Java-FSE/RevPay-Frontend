@@ -23,6 +23,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
   },
   {
+    path: '2fa-verify',
+    loadComponent: () => import('./pages/two-factor-verify/two-factor-verify.component').then(m => m.TwoFactorVerifyComponent),
+  },
+  {
     path: 'privacy-policy',
     loadComponent: () => import('./pages/legal/privacy-policy/privacy-policy.component')
       .then(m => m.PrivacyPolicyComponent),
@@ -83,14 +87,9 @@ export const routes: Routes = [
     component: ShellComponent,
     canActivate: [AuthGuard],
     children: [
-      {
-  path: 'chat-history',
-  loadComponent: () =>
-    import('./pages/chat-history/chat-history.component')
-      .then(m => m.ChatHistoryComponent),
-},
       { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent) },
       { path: 'transactions', loadComponent: () => import('./pages/transactions/transactions.component').then(m => m.TransactionsComponent) },
+      { path: 'split-payment', loadComponent: () => import('./pages/split-payment/split-payment.component').then(m => m.SplitPaymentComponent) },
       { path: 'payment-methods', loadComponent: () => import('./pages/payment-methods/payment-methods.component').then(m => m.PaymentMethodsComponent) },
       { path: 'requests', loadComponent: () => import('./pages/requests/requests.component').then(m => m.RequestsComponent) },
       { path: 'send-money', loadComponent: () => import('./pages/send-money/send-money.component').then(m => m.SendMoneyComponent) },

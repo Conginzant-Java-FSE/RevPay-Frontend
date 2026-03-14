@@ -28,6 +28,7 @@ export interface AuthResponse {
   email: string;
   fullName: string;
   accountType: string;
+  requiresOtp?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -89,6 +90,22 @@ export class AuthService {
     return this.http.post<void>(
       `${this.baseUrl}/auth/forgot-password/reset`, payload
     );
+  }
+
+  verifyOtp(emailOrPhone: string, otp: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.baseUrl}/auth/2fa/verify`, { emailOrPhone, otp });
+  }
+
+  resendOtp(emailOrPhone: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/auth/2fa/resend`, { emailOrPhone });
+  }
+
+  enable2FA(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/auth/2fa/enable`, {});
+  }
+
+  disable2FA(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/auth/2fa/disable`, {});
   }
 
 }
