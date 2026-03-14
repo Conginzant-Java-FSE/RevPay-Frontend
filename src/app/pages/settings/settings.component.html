@@ -17,6 +17,29 @@
       <button class="settings-tab" [class.active]="activeTab==='profile'"  (click)="activeTab='profile'; error=''; successMsg=''"><mat-icon>person</mat-icon> Profile</button>
       <button class="settings-tab" [class.active]="activeTab==='password'" (click)="activeTab='password'; error=''; successMsg=''"><mat-icon>password</mat-icon> Password</button>
       <button class="settings-tab" [class.active]="activeTab==='pin'"      (click)="activeTab='pin'; error=''; successMsg=''"><mat-icon>pin</mat-icon> PIN</button>
+      <button class="settings-tab" [class.active]="activeTab==='security'" (click)="activeTab='security'; error=''; successMsg=''"><mat-icon>security</mat-icon> Security</button>
+    </div>
+
+    <!-- Security Tab -->
+    <div class="settings-content" *ngIf="activeTab === 'security'">
+      <h2 class="section-title">Security Settings</h2>
+      <p class="section-desc">Enhance your account security with additional layers of protection.</p>
+      
+      <div class="security-card">
+        <div class="security-info">
+          <div class="security-icon">🔐</div>
+          <div>
+            <h3>Two-Factor Authentication (2FA)</h3>
+            <p>Receive a verification code via email whenever you log in.</p>
+          </div>
+        </div>
+        <div class="security-action">
+          <span class="status-badge" [class.enabled]="twoFactorEnabled">{{ twoFactorEnabled ? 'Enabled' : 'Disabled' }}</span>
+          <button class="btn-primary sm" (click)="toggleTwoFactor()" [disabled]="saving">
+            {{ twoFactorEnabled ? 'Disable' : 'Enable' }}
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Profile Tab -->
