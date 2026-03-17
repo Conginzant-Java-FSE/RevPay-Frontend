@@ -1,0 +1,76 @@
+<div class="pub-ai-wrapper">
+
+  <!-- FAB -->
+  <button class="pub-ai-fab" (click)="toggleChat()" [class.open]="isOpen" title="Ask RevPay Assistant">
+    <span *ngIf="!isOpen">✦</span>
+    <span *ngIf="isOpen">✕</span>
+    <span class="pub-ai-pulse"></span>
+  </button>
+
+  <!-- Window -->
+  <div class="pub-ai-window" [class.show]="isOpen">
+
+    <!-- Header -->
+    <div class="pub-ai-header">
+      <div class="pub-ai-header-left">
+        <div class="pub-ai-avatar">✦</div>
+        <div>
+          <div class="pub-ai-title">RevPay Assistant</div>
+          <div class="pub-ai-status">
+            <span class="pub-ai-dot" [class.thinking]="loading"></span>
+            {{ loading ? 'Thinking…' : 'Online · No login required' }}
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:4px">
+        <button class="pub-ai-icon-btn" (click)="clearChat()" title="Clear">↺</button>
+        <button class="pub-ai-icon-btn" (click)="closeChat()" title="Close">✕</button>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="pub-ai-body" #msgBox>
+      <div *ngFor="let msg of messages"
+           class="pub-ai-msg"
+           [class.user]="msg.role === 'user'"
+           [class.assistant]="msg.role === 'assistant'">
+        <div class="pub-ai-bubble">{{ msg.content }}</div>
+      </div>
+      <div class="pub-ai-msg assistant" *ngIf="loading">
+        <div class="pub-ai-bubble pub-ai-typing">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emoji picker -->
+    <div class="pub-ai-emoji-picker" *ngIf="showEmojis" (click)="$event.stopPropagation()">
+      <div *ngFor="let group of emojiGroups" class="pub-ai-emoji-group">
+        <div class="pub-ai-emoji-label">{{ group.label }}</div>
+        <div class="pub-ai-emoji-grid">
+          <button *ngFor="let e of group.emojis" class="pub-ai-emoji-btn" (click)="insertEmoji(e)">{{ e }}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login nudge banner -->
+    <div class="pub-ai-nudge">
+      🔒 Want personalised answers?
+      <a routerLink="/login">Log in</a> for your balance, transactions & more.
+    </div>
+
+    <!-- Input -->
+    <div class="pub-ai-footer">
+      <button class="pub-ai-emoji-toggle" (click)="toggleEmojis($event)" [class.active]="showEmojis" title="Emojis">😊</button>
+      <textarea class="pub-ai-input"
+                [(ngModel)]="userInput"
+                (keydown)="onKeyDown($event)"
+                placeholder="Ask about RevPay…"
+                rows="1"
+                [disabled]="loading">
+      </textarea>
+      <button class="pub-ai-send" (click)="sendMessage()" [disabled]="!userInput.trim() || loading">➤</button>
+    </div>
+
+  </div>
+</div>

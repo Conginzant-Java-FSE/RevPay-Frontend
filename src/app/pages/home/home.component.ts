@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { PublicAiChatComponent } from '../../shared/public-ai-chat/public-ai-chat.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, CommonModule, MatIconModule],
+  imports: [RouterLink, CommonModule, MatIconModule, PublicAiChatComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })

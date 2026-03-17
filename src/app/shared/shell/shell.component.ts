@@ -6,11 +6,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { UserProfile } from '../../core/models';
 import { MatIconModule } from '@angular/material/icon';
+import { AiChatComponent } from '../ai-chat/ai-chat.component';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet, MatIconModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet, MatIconModule, AiChatComponent],
   templateUrl: './shell.component.html',
   styleUrls: ['./shell.component.scss'],
 })

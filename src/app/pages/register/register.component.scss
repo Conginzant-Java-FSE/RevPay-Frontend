@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
 
-$accent: #4f8ef7;
-$accent2: #7c3aed;
+$accent: #2563eb;
+$accent2: #4338ca;
 $text: #e8eaf0;
 $muted: #6b7280;
 $surface: #0d1117;
@@ -476,8 +476,8 @@ $success: #22c55e;
   }
 
   &.open .custom-select-trigger {
-    border-color: rgba(#4f8ef7, 0.5);
-    box-shadow: 0 0 0 3px rgba(#4f8ef7, 0.08);
+    border-color: rgba(#2563eb, 0.5);
+    box-shadow: 0 0 0 3px rgba(#2563eb, 0.08);
   }
 }
 
@@ -563,7 +563,7 @@ $success: #22c55e;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #4f8ef7;            // accent color — clearly readable
+  color: #2563eb;            // accent color — clearly readable
   background: rgba(79, 142, 247, 0.06);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   pointer-events: none;      // not clickable
@@ -589,14 +589,14 @@ $success: #22c55e;
 
   &.selected {
     background: rgba(79, 142, 247, 0.12);
-    color: #4f8ef7;
+    color: #2563eb;
     font-weight: 500;
   }
 }
 
 .option-check {
   font-size: 0.75rem;
-  color: #4f8ef7;
+  color: #2563eb;
   width: 14px;
   flex-shrink: 0;
 }
