@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProfileService } from '../../core/services/profile.service';
 import { UserService } from '../../core/services/user.service';
+import { AuthService } from '../../core/services/auth.service';
 import { UserProfile } from '../../core/models';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -16,10 +17,11 @@ import { MatIconModule } from '@angular/material/icon';
 export class SettingsComponent implements OnInit {
   profile: UserProfile | null = null;
   loading = true;
-  activeTab: 'profile' | 'password' | 'pin' = 'profile';
+  activeTab: 'profile' | 'password' | 'pin' | 'security' = 'profile';
   saving = false;
   error = '';
   successMsg = '';
+  twoFactorEnabled = false;
 
   profileForm: FormGroup;
   passwordForm: FormGroup;
@@ -29,6 +31,7 @@ export class SettingsComponent implements OnInit {
     private fb: FormBuilder,
     private profileService: ProfileService,
     private userService: UserService,
+    private authService: AuthService,
   ) {
     this.profileForm = this.fb.group({
       fullName: ['', Validators.required],
@@ -69,6 +72,7 @@ export class SettingsComponent implements OnInit {
             contactPhone: this.profile.contactPhone ?? '',
             website:      this.profile.website ?? '',
           });
+          this.twoFactorEnabled = (this.profile as any).twoFactorEnabled;
         }
       },
       error: () => { this.loading = false; },
@@ -107,6 +111,26 @@ export class SettingsComponent implements OnInit {
     this.profileService.changePin(this.pinForm.value).subscribe({
       next: () => { this.saving = false; this.pinForm.reset(); this.successMsg = 'PIN updated!'; setTimeout(() => this.successMsg = '', 3000); },
       error: (err) => { this.error = err.error?.message ?? 'Failed.'; this.saving = false; },
+    });
+  }
+
+  toggleTwoFactor(): void {
+    this.saving = true;
+    const request$ = this.twoFactorEnabled 
+      ? this.authService.disable2FA() 
+      : this.authService.enable2FA();
+    
+    request$.subscribe({
+      next: () => {
+        this.saving = false;
+        this.twoFactorEnabled = !this.twoFactorEnabled;
+        this.successMsg = `Two-factor authentication ${this.twoFactorEnabled ? 'enabled' : 'disabled'}!`;
+        setTimeout(() => this.successMsg = '', 3000);
+      },
+      error: (err) => {
+        this.saving = false;
+        this.error = err.error?.message ?? 'Action failed.';
+      }
     });
   }
 

@@ -27,13 +27,14 @@
       <a class="nav-item" routerLink="/send-money" routerLinkActive="active">
         <mat-icon class="nav-icon">send</mat-icon> Send Money
       </a>
+      <a class="nav-item" routerLink="/split-payment" routerLinkActive="active">
+        <mat-icon class="nav-icon">call_split</mat-icon> Split Pay
+      </a>
       <a class="nav-item" routerLink="/notifications" routerLinkActive="active">
         <mat-icon class="nav-icon">notifications</mat-icon> Notifications
         <span class="nav-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
       </a>
-<a class="nav-item" routerLink="/chat-history" routerLinkActive="active">
-  <mat-icon class="nav-icon">people</mat-icon> People
-</a>
+
       <a class="nav-item" routerLink="/settings" routerLinkActive="active">
         <mat-icon class="nav-icon">settings</mat-icon> Settings
       </a>
@@ -88,4 +89,8 @@
     <!-- Page content injected here -->
     <router-outlet></router-outlet>
   </main>
+
+  <!-- ── AI Assistant floating chat widget ────────────────────── -->
+  <app-ai-chat></app-ai-chat>
+
 </div>

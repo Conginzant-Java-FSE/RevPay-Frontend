@@ -1,0 +1,396 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap');
+
+// ── Design tokens (match shell) ───────────────────────────────────────────────
+$accent:    #2563eb;
+$accent2:   #4338ca;
+$bg:        #050810;
+$surface:   #0d1117;
+$surface2:  #111827;
+$border:    rgba(255, 255, 255, 0.08);
+$text:      #e8eaf0;
+$muted:     #6b7280;
+$radius:    16px;
+
+// ── Wrapper (fixed to viewport bottom-right) ─────────────────────────────────
+.ai-fab-wrapper {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  font-family: 'DM Sans', sans-serif;
+}
+
+// ── Floating Action Button ────────────────────────────────────────────────────
+.ai-fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $accent, $accent2);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 8px 32px rgba($accent, 0.4);
+  transition: transform 0.25s, box-shadow 0.25s;
+  position: relative;
+
+  &:hover {
+    transform: scale(1.08);
+    box-shadow: 0 12px 40px rgba($accent, 0.5);
+  }
+
+  &.open {
+    background: linear-gradient(135deg, #374151, #1f2937);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.ai-fab-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+  user-select: none;
+}
+
+// Pulse ring
+.ai-fab-pulse {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba($accent, 0.4);
+  animation: pulse-ring 2s ease-out infinite;
+  pointer-events: none;
+
+  .open & { display: none; }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+// ── Chat Window ───────────────────────────────────────────────────────────────
+.ai-window {
+  position: absolute;
+  bottom: 68px;
+  right: 0;
+  width: 360px;
+  max-height: 520px;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: $radius;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+
+  // Hidden by default
+  opacity: 0;
+  transform: translateY(12px) scale(0.97);
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+
+  &.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
+  }
+
+  @media (max-width: 420px) {
+    width: calc(100vw - 32px);
+    right: -8px;
+  }
+}
+
+// ── Header ────────────────────────────────────────────────────────────────────
+.ai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: linear-gradient(135deg,
+    rgba($accent, 0.12) 0%,
+    rgba($accent2, 0.08) 100%);
+  border-bottom: 1px solid $border;
+  flex-shrink: 0;
+}
+
+.ai-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ai-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $accent, $accent2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.ai-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: $text;
+}
+
+.ai-status {
+  font-size: 0.72rem;
+  color: $muted;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ai-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  flex-shrink: 0;
+
+  &.thinking {
+    background: $accent;
+    animation: blink 1s ease-in-out infinite;
+  }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+.ai-header-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.ai-icon-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid $border;
+  color: $muted;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: $text;
+  }
+}
+
+// ── Message Area ──────────────────────────────────────────────────────────────
+.ai-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+}
+
+.ai-msg {
+  display: flex;
+
+  &.user     { justify-content: flex-end; }
+  &.assistant { justify-content: flex-start; }
+}
+
+.ai-bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.83rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+
+  .user & {
+    background: linear-gradient(135deg, $accent, $accent2);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+
+  .assistant & {
+    background: $surface2;
+    border: 1px solid $border;
+    color: $text;
+    border-bottom-left-radius: 4px;
+  }
+}
+
+// Typing indicator (three bouncing dots)
+.ai-typing {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 16px;
+
+  span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: $muted;
+    animation: bounce 1.2s ease-in-out infinite;
+
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.4s; }
+  }
+}
+
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30%           { transform: translateY(-6px); }
+}
+
+// ── Input Footer ──────────────────────────────────────────────────────────────
+.ai-footer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid $border;
+  background: $bg;
+  flex-shrink: 0;
+}
+
+.ai-input {
+  flex: 1;
+  background: $surface2;
+  border: 1px solid $border;
+  border-radius: 10px;
+  color: $text;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.83rem;
+  padding: 9px 12px;
+  resize: none;
+  line-height: 1.5;
+  max-height: 100px;
+  overflow-y: auto;
+  transition: border-color 0.2s;
+  outline: none;
+
+  &::placeholder { color: $muted; }
+  &:focus        { border-color: rgba($accent, 0.5); }
+  &:disabled     { opacity: 0.5; cursor: not-allowed; }
+}
+
+.ai-send-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, $accent, $accent2);
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: opacity 0.2s, transform 0.15s;
+
+  &:hover:not(:disabled) { transform: scale(1.05); }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+// ── Emoji Toggle Button ───────────────────────────────────────────────────────
+.ai-emoji-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid $border;
+  cursor: pointer;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  line-height: 1;
+
+  &:hover  { background: rgba(255,255,255,0.06); }
+  &.active { background: rgba($accent, 0.15); border-color: rgba($accent, 0.4); }
+}
+
+// ── Emoji Picker Panel ────────────────────────────────────────────────────────
+.ai-emoji-picker {
+  border-top: 1px solid $border;
+  background: $surface;
+  padding: 10px 12px;
+  max-height: 200px;
+  overflow-y: auto;
+  flex-shrink: 0;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+  // Slide in from bottom
+  animation: emoji-slide-in 0.18s ease;
+}
+
+@keyframes emoji-slide-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ai-emoji-group {
+  margin-bottom: 8px;
+
+  &:last-child { margin-bottom: 0; }
+}
+
+.ai-emoji-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $muted;
+  margin-bottom: 4px;
+}
+
+.ai-emoji-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.ai-emoji-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.1s;
+  line-height: 1;
+
+  &:hover {
+    background: rgba(255,255,255,0.08);
+    transform: scale(1.2);
+  }
+}
+
