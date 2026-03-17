@@ -1,24 +1,26 @@
-import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom  } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection, importProvidersFrom } from '@angular/core';
 import { provideRouter, withViewTransitions, withInMemoryScrolling } from '@angular/router';
-import { provideHttpClient, withInterceptors  } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { routes } from './app.routes';
 import { authInterceptorFn } from './core/interceptors/auth.interceptor';
 import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(
-      routes, 
+      routes,
       withViewTransitions(),
       withInMemoryScrolling({
         scrollPositionRestoration: 'enabled',
-        anchorScrolling: 'enabled',
+        anchorScrolling: 'enabled'
       })
     ),
     provideHttpClient(withInterceptors([authInterceptorFn])),
     provideAnimationsAsync(),
-    importProvidersFrom(MatIconModule), provideAnimationsAsync()
-  ],
+
+    importProvidersFrom(MatIconModule, FormsModule)
+  ]
 };

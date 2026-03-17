@@ -43,9 +43,12 @@ export class LoginComponent {
 
     this.authService.login(this.form.value).subscribe({
       next: (res) => {
+        if (res.requiresOtp) {
+          this.router.navigate(['/2fa-verify'], { state: { emailOrPhone: this.form.value.emailOrPhone } });
+          return;
+        }
         this.authService.saveToken(res.token);
         this.tokenService.setToken(res.token);
-        // this.router.navigate(['/dashboard']);
         this.router.navigate(['/init'])
       },
       error: (err) => {
