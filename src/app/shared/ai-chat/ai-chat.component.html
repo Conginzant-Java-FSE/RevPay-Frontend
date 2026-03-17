@@ -1,0 +1,88 @@
+<div class="ai-fab-wrapper">
+
+  <!-- Floating Action Button -->
+  <button class="ai-fab" (click)="toggleChat()" [class.open]="isOpen" title="RevPay AI Assistant">
+    <span class="ai-fab-icon" *ngIf="!isOpen">✦</span>
+    <span class="ai-fab-icon" *ngIf="isOpen">✕</span>
+    <span class="ai-fab-pulse"></span>
+  </button>
+
+  <!-- Chat Window -->
+  <div class="ai-window" [class.show]="isOpen">
+
+    <!-- Header -->
+    <div class="ai-header">
+      <div class="ai-header-left">
+        <div class="ai-avatar">✦</div>
+        <div class="ai-header-info">
+          <div class="ai-title">RevPay Assistant</div>
+          <div class="ai-status">
+            <span class="ai-dot" [class.thinking]="loading"></span>
+            {{ loading ? 'Thinking…' : 'Online' }}
+          </div>
+        </div>
+      </div>
+      <div class="ai-header-actions">
+        <button class="ai-icon-btn" (click)="clearChat()" title="Clear chat">↺</button>
+        <button class="ai-icon-btn" (click)="closeChat()" title="Close">✕</button>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="ai-body" #messageContainer>
+      <div *ngFor="let msg of messages"
+           class="ai-msg"
+           [class.user]="msg.role === 'user'"
+           [class.assistant]="msg.role === 'assistant'">
+        <div class="ai-bubble">{{ msg.content }}</div>
+      </div>
+
+      <!-- Typing indicator -->
+      <div class="ai-msg assistant" *ngIf="loading">
+        <div class="ai-bubble ai-typing">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emoji Picker Panel -->
+    <div class="ai-emoji-picker" *ngIf="showEmojis" (click)="$event.stopPropagation()">
+      <div *ngFor="let group of emojiGroups" class="ai-emoji-group">
+        <div class="ai-emoji-label">{{ group.label }}</div>
+        <div class="ai-emoji-grid">
+          <button *ngFor="let emoji of group.emojis"
+                  class="ai-emoji-btn"
+                  (click)="insertEmoji(emoji)"
+                  [title]="emoji">
+            {{ emoji }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="ai-footer">
+      <button class="ai-emoji-toggle"
+              (click)="toggleEmojis($event)"
+              [class.active]="showEmojis"
+              title="Emoji picker">
+        😊
+      </button>
+      <textarea
+        class="ai-input"
+        [(ngModel)]="userInput"
+        (keydown)="onKeyDown($event)"
+        placeholder="Ask me anything about RevPay…"
+        rows="1"
+        [disabled]="loading">
+      </textarea>
+      <button class="ai-send-btn"
+              (click)="sendMessage()"
+              [disabled]="!userInput.trim() || loading"
+              title="Send message">
+        ➤
+      </button>
+    </div>
+
+  </div>
+</div>
